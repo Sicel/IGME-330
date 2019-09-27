@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>First Canvas</title>
+    <style type="text/css">
+        canvas {
+            border: 1px solid gray;
+        }
+    </style>
+    <script>
+        // #0 - in this class we will always use ECMAScript 5's "strict" mode
+        // See what 'use strict' does here:
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
+        'use strict';
+
+        // #1 call the `init` function after the pages loads
+        window.onload = init;
+        let ctx;
+        let maxWidth = 640;
+        let maxHeight = 480;
+
+        // Properties for clear circle
+        let currentTime = 0; // Time being incremented by update function
+        let timeTilClean = 200; // Time until clear circle gets drawn (not in ms)
+        let radius = 0; // Radius of clear circle
+        let color = getRandomColor(); // Fill color for clear circle
+
+        function init() {
+            console.log("page loaded!");
+            // #2 Now that the page has loaded, start drawing!
+
+            // A - `canvas` variable points at <canvas> tag
+            let canvas = document.querySelector('canvas');
+
+            // B - the `ctx` variable points at a "2D drawing context"
+            ctx = canvas.getContext('2d');
+
+            // C - all fill operations are now in red
+            ctx.fillStyle = 'red';
+
+            // D - fill a rectangle with the current fill color
+            ctx.fillRect(20, 20, 640, 440);
+
+            update();
+        }
+
+        function update() {
+            requestAnimationFrame(update);
+
+            // Draws the clear circle
+
+            currentTime++;
+
+            // Stops every other shape from being drawn while the clear circle is being drawn
+            if (currentTime >= timeTilClean) {
+                clearCircle(radius += 30, color);
+                if (radius >= (maxWidth / 2) + 80) {
+
+                    // Resets clear circle properties
+                    currentTime = 0;
+                    radius = 0;
+                    color = getRandomColor();
+                }
+            } else {
+                drawRandomRect(ctx);
+                drawRandomLine(ctx);
+            }
+        }
+
+        function drawRandomRect(ctx) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(getRandomInt(0, maxWidth), getRandomInt(0, maxHeight), getRandomInt(10, 90), getRandomInt(10, 90));
+            ctx.closePath();
+            ctx.lineWidth = getRandomInt(2, 5);
+            ctx.fillStyle = getRandomColor();
+            ctx.strokeStyle = getRandomColor();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawRandomLine(ctx) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(getRandomInt(0, maxWidth), getRandomInt(0, maxHeight));
+            ctx.lineTo(getRandomInt(0, maxWidth), getRandomInt(0, maxHeight));
+            ctx.closePath();
+            ctx.strokeStyle = getRandomColor();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Creates a circle that clears the screen
+        function clearCircle(radius, color) {
+            ctx.beginPath();
+            ctx.arc(maxWidth / 2, maxHeight / 2, radius, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        function getRandomColor() {
+            function getByte() {
+                return 70 + Math.round(Math.random() * 200);
+            }
+            return "rgba(" + getByte() + "," + getByte() + ", 1)";
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+    </script>
+</head>
+
+<body>
+    <canvas width="640" height="480">
+        Get a real browser!
+    </canvas>
+</body></html>

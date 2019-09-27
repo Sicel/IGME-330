@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>First Canvas Done</title>
+    <script>
+        // #1 Call the init funtion after page loads
+        window.onload = init;
+
+        function init() {
+            // #2 Now that the page is loaded, start drawing!
+
+            // A - Canvas variable points at <canvas> tag
+            var canvas = document.querySelector("canvas");
+
+            // B - The ctx variable points at a "2D drawing context"
+            var ctx = canvas.getContext("2d");
+
+            // C - All fill operations are now in red
+            ctx.fillStyle = "red";
+
+            // D - Fill a rectangle with with the current fill color
+            ctx.fillRect(20, 20, 600, 440);
+        }
+    </script>
+</head>
+
+<body>
+    <canvas width="640" height="480">
+        Get a real browser!
+    </canvas>
+</body></html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Canvas 1</title>
+    <style type="text/css">
+        body {
+            background: #dddddd;
+        }
+
+        canvas {
+            background: #ffffff;
+            cursor: pointer;
+            margin-left: 10px;
+            margin-top: 10px;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+
+    <script>
+        "use strict";
+        window.onload = init;
+
+        let ctx;
+        let cWidth;
+        let cHeight;
+
+        let groundTop;
+
+        function init() {
+            let canvas = document.querySelector('canvas');
+            cWidth = canvas.width;
+            cHeight = canvas.height;
+
+            ctx = canvas.getContext('2d');
+
+            // Background
+            ctx.rect(0, 0, cWidth, cHeight);
+            ctx.fillStyle = "skyblue";
+            ctx.fill();
+
+
+            // Ground
+            groundTop = 3 * cHeight / 4;
+            ctx.beginPath();
+            ctx.moveTo(0, groundTop);
+            ctx.lineTo(cWidth, groundTop);
+            ctx.closePath();
+            ctx.strokeStyle = "green";
+            ctx.fillStyle = "green";
+            ctx.lineWidth = "10";
+            ctx.stroke();
+            ctx.fillRect(0, groundTop, cWidth, cHeight - groundTop);
+
+            // Trees
+            makeTree(65);
+            makeTree(165);
+            makeTree(265);
+            makeTree(365);
+            makeTree(465);
+            makeTree(565);
+            makeTree(665);
+
+            // Smiley Face
+            smileyFace();
+        }
+
+        function makeTree(xPosition) {
+            ctx.save();
+            // Variables
+            let trunkTop = groundTop - 20;
+            let treeX = xPosition;
+            let treeLeft = treeX - 40;
+            let treeRight = treeX + 40;
+            let treeMid = trunkTop - 40;
+            let treeTop = treeMid - 40;
+
+            // Trunk
+            ctx.beginPath();
+            ctx.moveTo(treeX, groundTop);
+            ctx.lineTo(treeX, trunkTop);
+            ctx.closePath();
+            ctx.strokeStyle = 'brown';
+            ctx.lineWidth = "15";
+            ctx.stroke();
+
+            // Leaves
+            ctx.beginPath();
+            // -Right (Going Up)
+            ctx.moveTo(treeLeft, trunkTop);
+            ctx.lineTo(treeRight, trunkTop);
+            ctx.arcTo(treeX + 5, trunkTop, treeRight - 25, treeMid, 32);
+            ctx.lineTo(treeRight - 20, treeMid);
+            ctx.arcTo(treeX, treeMid, treeX, treeTop, 32);
+            // -Left (Going Down)
+            ctx.arcTo(treeX, treeMid, treeLeft + 20, treeMid, 32);
+            ctx.lineTo(treeLeft + 25, treeMid);
+            ctx.arcTo(treeX - 5, trunkTop, treeLeft, trunkTop, 32);
+            ctx.closePath();
+
+            ctx.strokeStyle = "green";
+            ctx.fillStyle = "green";
+            ctx.stroke();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // I tried to make everythign scalable to have multiple faces but
+        // I couldn' figure out how
+        function smileyFace(x = cWidth / 2, y = cHeight / 2, radius = 200) {
+            ctx.save();
+
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = radius * 1 / 40;
+
+            let faceShift = -(x + radius) * .015;
+
+            // Face
+            let faceBottom = y + radius;
+            ctx.fillStyle = "#fedd58";
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Eyes
+            let eyeSize = radius / 3;
+            let eyeWidth = radius / 3;
+            let eyeTop = y - radius * .5;
+            let eyeHeight = y - eyeTop;
+
+            // - Left
+            let leftEyeX = (x - radius / 2) + faceShift;
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            //ctx.arc(leftEyeX, y, eyeWidth, 0, Math.PI, true);
+            ctx.moveTo(leftEyeX, y);
+            ctx.bezierCurveTo(
+                leftEyeX - eyeWidth, y,
+                leftEyeX - eyeWidth, eyeTop,
+                leftEyeX, eyeTop
+            );
+            ctx.bezierCurveTo(
+                leftEyeX + eyeWidth, eyeTop,
+                leftEyeX + eyeWidth, y,
+                leftEyeX, y
+            );
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Box that gives the eyes its corners
+            ctx.beginPath();
+            ctx.moveTo(leftEyeX - eyeWidth * .75, y - (eyeHeight / 2));
+            ctx.lineTo(leftEyeX - eyeWidth * .75, y);
+            ctx.lineTo(leftEyeX + eyeWidth * .75, y);
+            ctx.lineTo(leftEyeX + eyeWidth * .75, y - (eyeHeight / 2));
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+
+            // - Right
+            let rightEyeX = (x + radius / 2) + faceShift;
+            ctx.beginPath();
+            ctx.moveTo(rightEyeX, y);
+            ctx.bezierCurveTo(
+                rightEyeX - eyeWidth, y,
+                rightEyeX - eyeWidth, eyeTop,
+                rightEyeX, eyeTop
+            );
+            ctx.bezierCurveTo(
+                rightEyeX + eyeWidth, eyeTop,
+                rightEyeX + eyeWidth, y,
+                rightEyeX, y
+            );
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Box that gives the eyes its corners
+            ctx.beginPath();
+            ctx.moveTo(rightEyeX - eyeWidth * .75, y - (eyeHeight / 2));
+            ctx.lineTo(rightEyeX - eyeWidth * .75, y);
+            ctx.lineTo(rightEyeX + eyeWidth * .75, y);
+            ctx.lineTo(rightEyeX + eyeWidth * .75, y - (eyeHeight / 2));
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+
+            // Pupils
+            let pupilSize = eyeSize / 4;
+            // - Left
+            let leftPupilX = (eyeWidth * Math.cos(Math.PI / 3)) + leftEyeX;
+            leftPupilX -= pupilSize;
+            let leftPupilY = (eyeHeight * -Math.sin(Math.PI / 3)) + y;
+            leftPupilY += pupilSize;
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(leftPupilX, leftPupilY, pupilSize, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // - Right
+            let rightPupilX = (eyeWidth * Math.cos(Math.PI / 3)) + rightEyeX;
+            rightPupilX -= pupilSize;
+            let rightPupilY = (eyeHeight * -Math.sin(Math.PI / 3)) + y;
+            rightPupilY += pupilSize;
+            ctx.beginPath();
+            ctx.arc(rightPupilX, rightPupilY, pupilSize, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Mouth
+            let mouthSize = 8 * radius / 10;
+            let mouthTop = y + (faceBottom / 20);
+            ctx.fillStyle = "#871945";
+            ctx.beginPath();
+            ctx.moveTo(leftEyeX - eyeWidth, mouthTop);
+            ctx.lineTo(rightEyeX + eyeWidth, mouthTop);
+            ctx.arc(x, mouthTop, mouthSize, 0, Math.PI, false);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Tongue
+            let tongueStartX = (mouthSize * Math.cos(7 * Math.PI / 4)) + x;
+            let tongueStartY = (mouthSize * -Math.sin(7 * Math.PI / 4)) + mouthTop;
+            let tongueEndX = (mouthSize * Math.cos(51 * Math.PI / 36)) + x;
+            let tongueEndY = (mouthSize * -Math.sin(51 * Math.PI / 36)) + mouthTop;
+            let tongueBottomX = ((tongueEndX - tongueStartX) / 2) + tongueStartX;
+            let tongueBottomY = (mouthSize * -Math.sin(57 * Math.PI / 36)) + mouthTop;
+            console.log(tongueStartX);
+            console.log(tongueEndX);
+            console.log(tongueStartY);
+            console.log(tongueEndY);
+            ctx.fillStyle = "#fbc0df";
+            ctx.beginPath();
+            ctx.moveTo(tongueStartX, tongueStartY);
+            ctx.lineTo(tongueEndX, tongueEndY);
+            ctx.arcTo(x + 25, mouthTop + (2 * mouthSize / 5), tongueStartX, tongueStartY, 50);
+            ctx.moveTo(tongueStartX, tongueStartY);
+            ctx.lineTo(tongueEndX, tongueEndY);
+            ctx.arcTo(tongueBottomX, faceBottom, tongueEndX, tongueEndY, 600);
+            ctx.closePath();
+            ctx.fill();
+
+            // Hiding the bottom of the tongue
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, (y + radius) * (radius * .59 / radius), 1.1 * mouthSize, 0, Math.PI, false);
+            ctx.strokeStyle = '#fedd58';
+            ctx.lineWidth = radius * 3 / 40;
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+
+            // Mouth outline
+            ctx.beginPath();
+            ctx.moveTo(leftEyeX - eyeSize, mouthTop);
+            ctx.lineTo(rightEyeX + eyeSize, mouthTop);
+            ctx.arc(x, mouthTop, mouthSize, 0, Math.PI, false);
+            ctx.closePath();
+            ctx.stroke();
+
+            // Face outline
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+    </script>
+
+</head>
+
+<body>
+    <canvas width="750" height="500">
+        Get a browser that supports Canvas!
+    </canvas>
+</body></html>
