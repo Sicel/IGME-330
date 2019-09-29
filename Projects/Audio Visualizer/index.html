@@ -5,37 +5,25 @@
     <meta charset="utf-8" />
     <title>ES6 Sprites Plus Bitmap Manipulation</title>
     <style>
-        body {
-            font-family: sans-serif;
-            margin: 2%;
+        * {
+            padding: 0px;
         }
 
-        code {
-            font-size: 1.1em;
+        canvas {
+            margin: 0px;
+            padding: 0px;
+            position: absolute;
+            overflow: hidden;
+            pointer-events: none;
+            top: 0px;
+            left: 0px;
         }
-
-        span {
-            margin-right: 2em;
-        }
-
     </style>
 </head>
 
 <body>
     <canvas id="canvas"></canvas>
-    <!---
-    <p>
-        <span><input type="checkbox" id="trailsCB"> <label for="trailsCB">Trails</label></span>
-        <span><input type="checkbox" id="showImageCB"> <label for="showImageCB">Show Image</label></span>
-        <span><input type="checkbox" id="blendingCB"> <label for="blendingCB">Funky Blending</label></span>
-        <span><input type="checkbox" id="noiseCB"> <label for="noiseCB">Red Noise</label></span>
-        <span><input type="checkbox" id="tintCB"> <label for="tintCB">Magenta Tint</label></span>
-        <span><input type="checkbox" id="embossCB"> <label for="embossCB">Emboss</label></span>
-    </p>
--->
-    <p><b>Works best in Chrome!</b></p>
+    <audio controls src='audio/glass%20animals%20flip.mp3'></audio>
+    <button id="play" data-playing="no">Play</button>
     <script type="module" src="js/loader.js"></script>
-
-</body>
-
-</html>
+</body></html>
