@@ -4,26 +4,28 @@
 <head>
     <meta charset="utf-8" />
     <title>ES6 Sprites Plus Bitmap Manipulation</title>
-    <style>
-        * {
-            padding: 0px;
-        }
-
-        canvas {
-            margin: 0px;
-            padding: 0px;
-            position: absolute;
-            overflow: hidden;
-            pointer-events: none;
-            top: 0px;
-            left: 0px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
     <canvas id="canvas"></canvas>
-    <audio controls src='audio/glass%20animals%20flip.mp3'></audio>
-    <button id="play" data-playing="no">Play</button>
+    <div id="controls">
+        <audio controls src='audio/glass%20animals%20flip.mp3'></audio>
+        Song: <select id="songSelect">
+            <option selected value="audio/glass%20animals%20flip.mp3">Glass Animals - Flip</option>
+            <option value="audio/Apashe%20-%20Lacrimosa.mp3">Apashe - Lacrimosa</option>
+            <option value='audio/Confetti%20-%20Rob%20A%20Bank.mp3'>Confetti - Rob A Bank</option>
+        </select>
+        <button id="play" data-playing="no">Play</button>
+        Blend Mode: <select id="mode">
+        </select>
+        Gradient Mode: <select id="colorMode">
+            <option value="grad" selected>Normal</option>
+            <option value="rgb">Song Dependent</option>
+        </select>
+    </div>
+    <div id="arrowContainer">
+        <p class="downArrow"></p>
+    </div>
     <script type="module" src="js/loader.js"></script>
 </body></html>
