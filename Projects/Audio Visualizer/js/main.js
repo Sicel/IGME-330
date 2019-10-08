@@ -28,7 +28,8 @@ let ctx = document.querySelector("#canvas").getContext("2d"),
     maxMiniRadius,
     gradient,
     angleSpeed = 0.1,
-    rgbGradient;
+    rgbGradient,
+    gSet = 0;
 
 function init() {
     setupUI(audio, ctx);
@@ -151,8 +152,15 @@ function update() {
             let endY = (ctx.canvas.height / 2) + circles[circles.length - 1].radius * Math.sin(angle2);
             line.draw(ctx, endX, endY, startX, startY)
         }
+        let third = 255;
         if (currentColorMode != 'grad')
-            setRGB(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 255));
+            setRGB(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 125));
+        else {
+            if (gSet == 0) {
+                setGradient();
+                gSet++;
+            }
+        }
     }
 
     for (let i = 0; i < circles.length; i++) {
@@ -174,9 +182,11 @@ function resize() {
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
     maxDraw = ctx.canvas.width >= ctx.canvas.height ? ctx.canvas.width : ctx.canvas.height;
+    maxMiniRadius = maxDraw / 4;
     //ctx.globalCompositeOperation = mode.value
     setGradient();
     ctx.globalCompositeOperation = selectedMode;
+    console.log(maxDraw);
 }
 
 function setGradient() {
@@ -195,9 +205,9 @@ function setGradient() {
 function setRGB(r, g, b) {
     rgbGradient = ctx.createRadialGradient(ctx.canvas.width / 2, ctx.canvas.height / 2, 1, ctx.canvas.width / 2, ctx.canvas.height / 2, maxDraw);
     rgbGradient.addColorStop(0, 'rgb( ' + r + ' , 0, 0)');
-    rgbGradient.addColorStop(1 / 2, 'rgb(0, ' + g + ', 0)');
-    //rgbGradient.addColorStop(1, 'rgb(0, 0, ' + b + ')');
-    rgbGradient.addColorStop(1, 'rgb(0, 0, 255)');
+    rgbGradient.addColorStop(.3, `rgb(0, ${g}, 0)`);
+    rgbGradient.addColorStop(.5, 'rgb(0, 0, ' + b + ')');
 
     ctx.strokeStyle = rgbGradient;
+    gSet = 0;
 }
