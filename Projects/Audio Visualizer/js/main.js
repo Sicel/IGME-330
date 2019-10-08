@@ -10,13 +10,16 @@ import {
 import {
     Circle,
     Line
-} from './shapes.js'
+} from './shapes.js';
+import {
+    setupUI,
+    selectedMode,
+    currentColorMode
+} from './ui.js'
 //end
 
 let ctx = document.querySelector("#canvas").getContext("2d"),
     numSamples = 128,
-    playButton = document.querySelector("#play"),
-    //mode = document.querySelector("#mode"),
     audio = createAudioElement(document.querySelector('audio'), numSamples),
     circles = [],
     miniCircles = [],
@@ -25,46 +28,20 @@ let ctx = document.querySelector("#canvas").getContext("2d"),
     maxMiniRadius,
     gradient,
     angleSpeed = 0.1,
-    modes = ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"];
+    rgbGradient;
 
 function init() {
-
-    //for (let i = 0; i < modes.length; i++) {
-    //    let option = document.createElement("option");
-    //    option.innerHTML = modes[i];
-    //    let attr = document.createAttribute("value");
-    //    attr.value = modes[i];
-    //    option.setAttributeNode(attr);
-    //    mode.appendChild(option);
-    //}
-
+    setupUI(audio, ctx);
     ctx = document.querySelector("#canvas").getContext("2d");
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
     maxDraw = ctx.canvas.width >= ctx.canvas.height ? ctx.canvas.width : ctx.canvas.height;
     //mode.onchange = e => ctx.globalCompositeOperation = e.target.value;
-    ctx.globalCompositeOperation ="xor";
+    ctx.globalCompositeOperation = 'xor';
 
     setGradient();
 
-    maxMiniRadius = maxDraw / 3;
-    playButton.onclick = e => {
-        console.log("clicked");
-        // check if context is in suspended state (autoplay policy)
-        if (audio.ctx.state == "suspended") {
-            audio.ctx.resume();
-        }
-
-        if (e.target.dataset.playing == "no") {
-            audio.element.play();
-            e.target.dataset.playing = "yes";
-            // if track is playing pause it
-        } else if (e.target.dataset.playing == "yes") {
-            audio.element.pause();
-            e.target.dataset.playing = "no";
-        }
-
-    };
+    maxMiniRadius = maxDraw / 4;
 
     update();
     window.onresize = resize;
@@ -131,14 +108,6 @@ function update() {
     midMidThirdAvg = midMidThirdAmount / midMidThirdSize;
     midHighThirdAvg = midHighThirdAmount / midHighThirdSize;
 
-    //console.log("Low: " + lowThirdAvg);
-    //console.log("Mid: " + midThirdAvg);
-    //console.log("High: " + highThirdAvg);
-
-    //console.log("Low Mid: " + midLowThirdAvg);
-    //console.log("Mid Mid: " + midMidThirdAvg);
-    //console.log("High Mid: " + midHighThirdAvg);
-
     if (midThirdAvg >= 45) {
         circles.push(new Circle(1));
         lines.push(new Line());
@@ -159,7 +128,7 @@ function update() {
                 //miniCircle.drawRotating(ctx, ctx.canvas.width / 4, ctx.canvas.height / 2, radius, 5);
                 break;
             case 2:
-                percent = highThirdAvg / 20;
+                percent = highThirdAvg / 255;
                 radius = maxMiniRadius * percent;
                 //miniCircle.drawRotating(ctx, 3 * ctx.canvas.width / 4, ctx.canvas.height / 2, radius, 5);
                 break;
@@ -173,20 +142,17 @@ function update() {
         miniCircle.drawRotating(ctx, locX, locY, radius, 5);
 
         angle2 -= angleSpeed;
-        //for (let j = 0; j < circles.length; j++) {
-        //        let startX = (ctx.canvas.width / 2) + circles[i].radius * Math.cos(angle2);
-        //        let startY = (ctx.canvas.height / 2) + circles[i].radius * Math.sin(angle2);
-        //        let endX = (ctx.canvas.height / 2) + maxDraw * Math.cos(angle2);
-        //        let endY = (ctx.canvas.height / 2) + maxDraw * Math.sin(angle2);
-        //        lines[i].draw(ctx, startX, startY, endX, endY);
-        //    }
-        
+
         if (circles.length > 0) {
             let line = new Line();
-            let endX = (ctx.canvas.height / 2) + circles[i].radius * Math.cos(angle2);
-            let endY = (ctx.canvas.height / 2) + circles[i].radius * Math.sin(angle2);
-            line.draw(ctx, ctx.canvas.width / 2, ctx.canvas.height / 2, endX, endY)
+            let startX = (ctx.canvas.width / 2) + circles[0].radius * Math.cos(angle2);
+            let startY = (ctx.canvas.height / 2) + circles[0].radius * Math.sin(angle2);
+            let endX = (ctx.canvas.width / 2) + circles[circles.length - 1].radius * Math.cos(angle2);
+            let endY = (ctx.canvas.height / 2) + circles[circles.length - 1].radius * Math.sin(angle2);
+            line.draw(ctx, endX, endY, startX, startY)
         }
+        if (currentColorMode != 'grad')
+            setRGB(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 255));
     }
 
     for (let i = 0; i < circles.length; i++) {
@@ -210,6 +176,7 @@ function resize() {
     maxDraw = ctx.canvas.width >= ctx.canvas.height ? ctx.canvas.width : ctx.canvas.height;
     //ctx.globalCompositeOperation = mode.value
     setGradient();
+    ctx.globalCompositeOperation = selectedMode;
 }
 
 function setGradient() {
@@ -223,4 +190,14 @@ function setGradient() {
     gradient.addColorStop(1, '#AADD22');
 
     ctx.strokeStyle = gradient;
+}
+
+function setRGB(r, g, b) {
+    rgbGradient = ctx.createRadialGradient(ctx.canvas.width / 2, ctx.canvas.height / 2, 1, ctx.canvas.width / 2, ctx.canvas.height / 2, maxDraw);
+    rgbGradient.addColorStop(0, 'rgb( ' + r + ' , 0, 0)');
+    rgbGradient.addColorStop(1 / 2, 'rgb(0, ' + g + ', 0)');
+    //rgbGradient.addColorStop(1, 'rgb(0, 0, ' + b + ')');
+    rgbGradient.addColorStop(1, 'rgb(0, 0, 255)');
+
+    ctx.strokeStyle = rgbGradient;
 }
