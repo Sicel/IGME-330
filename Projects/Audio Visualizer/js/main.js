@@ -14,7 +14,9 @@ import {
 import {
     setupUI,
     selectedMode,
-    currentColorMode
+    currentColorMode,
+    currentSongDuration,
+    updateTime
 } from './ui.js'
 //end
 
@@ -44,39 +46,45 @@ function init() {
 
     maxMiniRadius = maxDraw / 4;
 
-    update();
     window.onresize = resize;
+    update();
 }
 
 function update() {
     requestAnimationFrame(update);
+    updateTime(audio.element.currentTime, currentSongDuration);
+
     audio.analyser.getByteFrequencyData(audio.data);
 
+    //ctx.save();
+    //ctx.fillStyle = '#fff';
+    //ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //ctx.restore();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    let lowThirdSize = 0;
-    let midThirdSize = 0;
-    let highThirdSize = 0;
+    var lowThirdSize = 0;
+    var midThirdSize = 0;
+    var highThirdSize = 0;
 
-    let lowThirdAmount = 0;
-    let midThirdAmount = 0;
-    let highThirdAmount = 0;
+    var lowThirdAmount = 0;
+    var midThirdAmount = 0;
+    var highThirdAmount = 0;
 
-    let lowThirdAvg = 0;
-    let midThirdAvg = 0;
-    let highThirdAvg = 0;
+    var lowThirdAvg = 0;
+    var midThirdAvg = 0;
+    var highThirdAvg = 0;
 
-    let midLowThirdSize = 0;
-    let midMidThirdSize = 0;
-    let midHighThirdSize = 0;
+    var midLowThirdSize = 0;
+    var midMidThirdSize = 0;
+    var midHighThirdSize = 0;
 
-    let midLowThirdAmount = 0;
-    let midMidThirdAmount = 0;
-    let midHighThirdAmount = 0;
+    var midLowThirdAmount = 0;
+    var midMidThirdAmount = 0;
+    var midHighThirdAmount = 0;
 
-    let midLowThirdAvg = 0;
-    let midMidThirdAvg = 0;
-    let midHighThirdAvg = 0;
+    var midLowThirdAvg = 0;
+    var midMidThirdAvg = 0;
+    var midHighThirdAvg = 0;
 
     for (let i = 0; i < audio.data.length; i++) {
         if (i <= audio.data.length / 3) {

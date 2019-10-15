@@ -10,19 +10,45 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="controls">
-        <audio controls src='audio/glass%20animals%20flip.mp3'></audio>
-        Song: <select id="songSelect">
-            <option selected value="audio/glass%20animals%20flip.mp3">Glass Animals - Flip</option>
-            <option value="audio/Apashe%20-%20Lacrimosa.mp3">Apashe - Lacrimosa</option>
-            <option value='audio/Confetti%20-%20Rob%20A%20Bank.mp3'>Confetti - Rob A Bank</option>
-        </select>
-        <button id="play" data-playing="no">Play</button>
-        Blend Mode: <select id="mode">
-        </select>
-        Gradient Mode: <select id="colorMode">
-            <option value="grad" selected>Normal</option>
-            <option value="rgb">Song Dependent</option>
-        </select>
+
+        <div id="audioControls">
+            <div class="controlHeading">
+                <p class="downArrow"></p>
+                <h1>Audio</h1>
+            </div>
+            <p id="audioTime">0:00 / 3:42</p>
+            <audio src='audio/glass%20animals%20flip.mp3'></audio>
+            <p class="control">Song:
+                <select id="songSelect">
+                    <option selected value="audio/glass%20animals%20flip.mp3">Glass Animals - Flip</option>
+                    <option value="audio/Apashe%20-%20Lacrimosa.mp3">Apashe - Lacrimosa</option>
+                    <option value='audio/Confetti%20-%20Rob%20A%20Bank.mp3'>Confetti - Rob A Bank</option>
+                </select>
+            </p>
+            <button id="play" class="control" data-playing="no">Play</button>
+            <h3 class="effects">Effects</h3>
+            <h3 class="options">Options</h3>
+        </div>
+
+        <div id="visualControls">
+            <div class="controlHeading">
+                <p class="downArrow"></p>
+                <h1>Visual</h1>
+            </div>
+            <h3 class="effects">Effects</h3>
+            <p class="control">Blend Mode:
+                <select id="mode">
+                </select>
+            </p>
+            <p class="control">Gradient Mode:
+                <select id="colorMode">
+                    <option value="grad" selected>Normal</option>
+                    <option value="rgb">Song Dependent</option>
+                </select>
+            </p>
+            <h3 class="options">Options</h3>
+        </div>
+
     </div>
     <div id="arrowContainer">
         <p class="downArrow"></p>

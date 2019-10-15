@@ -1,7 +1,11 @@
 export {
     selectedMode,
-    currentColorMode
+    currentColorMode,
+    currentSongDuration
 };
+import {
+    convertToTime
+} from './utils.js';
 
 let controlsShowing = false,
     downArrow = document.querySelector("#arrowContainer"),
@@ -12,7 +16,11 @@ let mode = document.querySelector("#mode"),
     modes = ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"],
     selectedMode = 'xor';
 
-let songSelect = document.querySelector("#songSelect");
+let songSelect = document.querySelector("#songSelect"),
+    audioTime = document.querySelector("#audioTime"),
+    currentSongTime = 0,
+    currentSongDuration = 222;
+
 let colorMode = document.querySelector("#colorMode"),
     currentColorMode = 'grad';
 
@@ -20,6 +28,10 @@ export function setupUI(audio, ctx) {
     downArrow.onclick = e => {
         controlsShowing = !controlsShowing;
         showControls();
+    };
+
+    audio.element.onloadedmetadata = e => {
+        updateTime(0, e.target.duration)
     };
 
     playButton.onclick = e => {
@@ -43,6 +55,8 @@ export function setupUI(audio, ctx) {
 
     songSelect.onchange = e => {
         audio.element.src = e.target.value;
+        //audioTime.innerHTML = `0:00 / ${audio.element.duration}`;
+        console.log(audio.element.currentTime);
         if (playButton.dataset.playing == "yes")
             playButton.dispatchEvent(new MouseEvent("click"));
     }
@@ -74,4 +88,9 @@ function showControls() {
         downArrow.style.transform = "translate(0, -61px)";
         controls.style.transform = "translate(0, -61px)";
     }
+}
+
+export function updateTime(time, songDuration = currentSongDuration) {
+    audioTime.innerHTML = `${convertToTime(time)} / ${convertToTime(songDuration)}`;
+    currentSongDuration = songDuration;
 }
