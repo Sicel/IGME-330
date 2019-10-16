@@ -16,6 +16,8 @@ import {
     selectedMode,
     currentColorMode,
     currentSongDuration,
+    backgroundColor,
+    includeBackground,
     updateTime
 } from './ui.js'
 //end
@@ -54,13 +56,17 @@ function update() {
     requestAnimationFrame(update);
     updateTime(audio.element.currentTime, currentSongDuration);
 
+    console.log(includeBackground.checked);
     audio.analyser.getByteFrequencyData(audio.data);
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.save();
-    ctx.fillStyle = '#113';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.restore();
+
+    if (includeBackground.checked) {
+        ctx.save();
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.restore();
+    }
 
     var lowThirdSize = 0;
     var midThirdSize = 0;

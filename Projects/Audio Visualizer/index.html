@@ -67,16 +67,16 @@
                 <section class="options">
                     <h3>Options</h3>
                     <input type="checkbox" id="includeBackground"><label>Include Background</label>
-                    <h4>Background Color:</h4>
+                    <div id="backgroundColor">
+                        <p>Background Color:</p>
+                        <input id="colorPicker" class="jscolor {valueElement:null, width: 100}">
+                    </div>
+                    <!--
                     <div id="colorType">
                         <input type="radio" name="colorType" value="solid"><label>Solid</label>
-                        <input type="radio" name="colorType" value="gradient"><label>Gradient</label>
-                        <div id="colorStops">
-                            <button class="jscolor">Color 1</button>
-                            <button class="jscolor">Color 2</button>
-                            <button class="jscolor">Color 3</button>
-                        </div>
+                        <input selected type="radio" name="colorType" value="gradient"><label>Gradient</label>
                     </div>
+                    -->
                 </section>
             </div>
         </div>

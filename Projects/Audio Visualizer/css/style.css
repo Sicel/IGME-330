@@ -78,6 +78,22 @@ body {
     padding-top: 1px;
 }
 
+button {
+    border: 2px rgba(50, 50, 50, 1) solid;
+    width: 50px;
+    height: 20px;
+}
+
+#backgroundColor {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+#backgroundColor p {
+    margin-right: 5px;
+}
+
 .control {}
 
 #arrowContainer {

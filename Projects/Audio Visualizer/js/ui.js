@@ -1,7 +1,9 @@
 export {
     selectedMode,
     currentColorMode,
-    currentSongDuration
+    currentSongDuration,
+    backgroundColor,
+    includeBackground
 };
 import {
     convertToTime
@@ -23,7 +25,11 @@ let songSelect = document.querySelector("#songSelect"),
     currentSongDuration = 222;
 
 let colorMode = document.querySelector("#colorMode"),
-    currentColorMode = 'grad';
+    colorPicker = document.querySelector("#colorPicker"),
+    includeBackground = document.querySelector('#includeBackground'),
+    currentColorMode = 'grad',
+    backgroundColor = '#113',
+    colorPickerClicked = false;
 
 export function setupUI(audio, ctx) {
     downArrow.onclick = e => {
@@ -86,38 +92,55 @@ export function setupUI(audio, ctx) {
     };
 
     colorMode.onchange = e => currentColorMode = e.target.value;
-}
 
-function showControls() {
-    if (controlsShowing) {
-        downArrow.style.transform = "translate(0, -1px)";
-        controls.style.transform = `translate(0, 0)`;
-    } else {
-        downArrow.style.transform = `translate(0, ${-controls.offsetHeight - 1}px)`;
-        controls.style.transform = `translate(0, ${-controls.offsetHeight}px)`;
+    colorPicker.onclick = e => {
+        if (!colorPickerClicked) {
+            e.target.jscolor.onFineChange = function () {
+                updateColor(e.target.jscolor);
+            };
+            colorPickerClicked = true;
+        }
     }
-}
 
-function showSection(header) {
-    let arrow = header.firstElementChild;
-    let content = header.nextElementSibling;
+    includeBackground.onclick = e => {
+        colorPicker.style.display;
 
-    if (header.dataset.showing == "false") {
-        content.style.animationPlayState = "resume";
-        content.style.display = "block";
-        content.style.visibility = "visible";
-        arrow.style.transform = "rotate(45deg)";
-        header.dataset.showing = "true";
-    } else {
-        content.style.animationPlayState = "pause";
-        content.style.display = "none";
-        content.style.visibility = "hidden";
-        arrow.style.transform = "rotate(-45deg)";
-        header.dataset.showing = "false";
     }
-}
 
-export function updateTime(time, songDuration = currentSongDuration) {
-    audioTime.innerHTML = `${convertToTime(time)} / ${convertToTime(songDuration)}`;
-    currentSongDuration = songDuration;
-}
+    function showControls() {
+        if (controlsShowing) {
+            downArrow.style.transform = "translate(0, -1px)";
+            controls.style.transform = `translate(0, 0)`;
+        } else {
+            downArrow.style.transform = `translate(0, ${-controls.offsetHeight - 1}px)`;
+            controls.style.transform = `translate(0, ${-controls.offsetHeight}px)`;
+        }
+    }
+
+    function showSection(header) {
+        let arrow = header.firstElementChild;
+        let content = header.nextElementSibling;
+
+        if (header.dataset.showing == "false") {
+            content.style.animationPlayState = "resume";
+            content.style.display = "block";
+            content.style.visibility = "visible";
+            arrow.style.transform = "rotate(45deg)";
+            header.dataset.showing = "true";
+        } else {
+            content.style.animationPlayState = "pause";
+            content.style.display = "none";
+            content.style.visibility = "hidden";
+            arrow.style.transform = "rotate(-45deg)";
+            header.dataset.showing = "false";
+        }
+    }
+
+    export function updateTime(time, songDuration = currentSongDuration) {
+        audioTime.innerHTML = `${convertToTime(time)} / ${convertToTime(songDuration)}`;
+        currentSongDuration = songDuration;
+    }
+
+    function updateColor(jscolor) {
+        backgroundColor = `#${jscolor}`;
+    }
