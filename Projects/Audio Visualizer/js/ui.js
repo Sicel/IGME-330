@@ -8,6 +8,7 @@ import {
 } from './utils.js';
 
 let controlsShowing = false,
+    controlHeaders = document.querySelectorAll(".controlHeading"),
     downArrow = document.querySelector("#arrowContainer"),
     controls = document.querySelector("#controls"),
     playButton = document.querySelector("#play");
@@ -53,13 +54,20 @@ export function setupUI(audio, ctx) {
         }
     };
 
+    for (let i = 0; i < controlHeaders.length; i++) {
+        controlHeaders[i].onclick = _ => {
+            console.log(controlHeaders[i]);
+            showSection(controlHeaders[i]);
+        };
+    }
+
     songSelect.onchange = e => {
         audio.element.src = e.target.value;
         //audioTime.innerHTML = `0:00 / ${audio.element.duration}`;
         console.log(audio.element.currentTime);
         if (playButton.dataset.playing == "yes")
             playButton.dispatchEvent(new MouseEvent("click"));
-    }
+    };
 
     for (let i = 0; i < modes.length; i++) {
         let option = document.createElement("option");
@@ -75,7 +83,7 @@ export function setupUI(audio, ctx) {
     mode.onchange = e => {
         selectedMode = e.target.value;
         ctx.globalCompositeOperation = selectedMode;
-    }
+    };
 
     colorMode.onchange = e => currentColorMode = e.target.value;
 }
@@ -83,10 +91,29 @@ export function setupUI(audio, ctx) {
 function showControls() {
     if (controlsShowing) {
         downArrow.style.transform = "translate(0, -1px)";
-        controls.style.transform = "translate(0, 0)";
+        controls.style.transform = `translate(0, 0)`;
     } else {
-        downArrow.style.transform = "translate(0, -61px)";
-        controls.style.transform = "translate(0, -61px)";
+        downArrow.style.transform = `translate(0, ${-controls.offsetHeight - 1}px)`;
+        controls.style.transform = `translate(0, ${-controls.offsetHeight}px)`;
+    }
+}
+
+function showSection(header) {
+    let arrow = header.firstElementChild;
+    let content = header.nextElementSibling;
+
+    if (header.dataset.showing == "false") {
+        content.style.animationPlayState = "resume";
+        content.style.display = "block";
+        content.style.visibility = "visible";
+        arrow.style.transform = "rotate(45deg)";
+        header.dataset.showing = "true";
+    } else {
+        content.style.animationPlayState = "pause";
+        content.style.display = "none";
+        content.style.visibility = "hidden";
+        arrow.style.transform = "rotate(-45deg)";
+        header.dataset.showing = "false";
     }
 }
 

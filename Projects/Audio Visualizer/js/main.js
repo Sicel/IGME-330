@@ -56,11 +56,11 @@ function update() {
 
     audio.analyser.getByteFrequencyData(audio.data);
 
-    //ctx.save();
-    //ctx.fillStyle = '#fff';
-    //ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    //ctx.restore();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.save();
+    ctx.fillStyle = '#113';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.restore();
 
     var lowThirdSize = 0;
     var midThirdSize = 0;
@@ -212,9 +212,9 @@ function setGradient() {
 
 function setRGB(r, g, b) {
     rgbGradient = ctx.createRadialGradient(ctx.canvas.width / 2, ctx.canvas.height / 2, 1, ctx.canvas.width / 2, ctx.canvas.height / 2, maxDraw);
-    rgbGradient.addColorStop(0, 'rgb( ' + r + ' , 0, 0)');
+    rgbGradient.addColorStop(0, `rgb( ${r}, 0, 0)`);
     rgbGradient.addColorStop(.3, `rgb(0, ${g}, 0)`);
-    rgbGradient.addColorStop(.5, 'rgb(0, 0, ' + b + ')');
+    rgbGradient.addColorStop(.5, `rgb(0, 0, ${255 - b})`);
 
     ctx.strokeStyle = rgbGradient;
     gSet = 0;

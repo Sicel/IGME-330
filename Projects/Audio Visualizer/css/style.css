@@ -27,7 +27,6 @@ body {
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     position: relative;
-    text-align: center;
     transition: 1s;
     padding-bottom: 1px;
 
@@ -37,12 +36,12 @@ body {
     flex-direction: row;
     align-items: stretch;
     width: 80%;
-    max-width: 951px;
+    max-width: 950px;
 }
 
 #controls div {
     margin: 5px;
-    flex-grow: 1;
+    flex-grow: 3;
 }
 
 .controlHeading {
@@ -54,11 +53,30 @@ body {
 .controlHeading .downArrow {
     border-width: 0 4px 4px 0;
     margin-right: 5px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transition: 0.5s;
 }
 
+.controlSection {
+    display: none;
+    visibility: hidden;
+    animation: ease 1s paused;
+}
+
+#songAndPlay {
+    display: inline-flex;
+}
 
 .effects,
-.options {}
+.options {
+    padding-top: 5px;
+}
+
+.effects *,
+.options * {
+    padding-top: 1px;
+}
 
 .control {}
 
@@ -83,4 +101,42 @@ body {
     padding: 3px;
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+}
+
+@media screen and (max-width: 600px) {
+    #controls {
+        transform: translate(0, 0.5px);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 60%;
+        float: left;
+        border-radius: 6px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .controlSection {
+        text-align: left;
+    }
+
+    #arrowContainer {
+        transform: translate(0, 10px);
+        margin: 0;
+        height: 60px;
+        width: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        top: 10px;
+        float: center;
+    }
+
+    .downArrow {
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+    }
 }

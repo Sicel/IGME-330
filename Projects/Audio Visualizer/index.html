@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>Audio Visualizer</title>
     <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="js/loader.js"></script>
 </head>
 
 <body>
@@ -12,46 +13,76 @@
     <div id="controls">
 
         <div id="audioControls">
-            <div class="controlHeading">
+            <div class="controlHeading" data-showing="false">
                 <p class="downArrow"></p>
                 <h1>Audio</h1>
             </div>
-            <p id="audioTime">0:00 / 3:42</p>
-            <audio src='audio/glass%20animals%20flip.mp3'></audio>
-            <p class="control">Song:
-                <select id="songSelect">
-                    <option selected value="audio/glass%20animals%20flip.mp3">Glass Animals - Flip</option>
-                    <option value="audio/Apashe%20-%20Lacrimosa.mp3">Apashe - Lacrimosa</option>
-                    <option value='audio/Confetti%20-%20Rob%20A%20Bank.mp3'>Confetti - Rob A Bank</option>
-                </select>
-            </p>
-            <button id="play" class="control" data-playing="no">Play</button>
-            <h3 class="effects">Effects</h3>
-            <h3 class="options">Options</h3>
+            <div class="controlSection">
+                <section id="audioInfo">
+                    <p id="audioTime">0:00 / 3:42</p>
+                    <div id="songAndPlay">
+                        <audio src='audio/glass%20animals%20flip.mp3'></audio>
+                        <p class="control">Song:
+                            <select id="songSelect">
+                                <option selected value="audio/glass%20animals%20flip.mp3">Glass Animals - Flip</option>
+                                <option value="audio/Apashe%20-%20Lacrimosa.mp3">Apashe - Lacrimosa</option>
+                                <option value='audio/Confetti%20-%20Rob%20A%20Bank.mp3'>Confetti - Rob A Bank</option>
+                            </select>
+                        </p>
+                        <button id="play" class="control" data-playing="no">Play</button>
+                    </div>
+                </section>
+
+                <section class="effects">
+                    <h3>Effects</h3>
+                </section>
+
+                <section class="options">
+                    <h3>Options</h3>
+                </section>
+            </div>
         </div>
 
         <div id="visualControls">
-            <div class="controlHeading">
+            <div class="controlHeading" data-showing="false">
                 <p class="downArrow"></p>
                 <h1>Visual</h1>
             </div>
-            <h3 class="effects">Effects</h3>
-            <p class="control">Blend Mode:
-                <select id="mode">
-                </select>
-            </p>
-            <p class="control">Gradient Mode:
-                <select id="colorMode">
-                    <option value="grad" selected>Normal</option>
-                    <option value="rgb">Song Dependent</option>
-                </select>
-            </p>
-            <h3 class="options">Options</h3>
+            <div class="controlSection">
+
+                <section class="effects">
+                    <h3>Effects</h3>
+                    <p class="control">Blend Mode:
+                        <select id="mode">
+                        </select>
+                    </p>
+                    <p class="control">Gradient Mode:
+                        <select id="colorMode">
+                            <option value="grad" selected>Normal</option>
+                            <option value="rgb">Song Dependent</option>
+                        </select>
+                    </p>
+                </section>
+
+                <section class="options">
+                    <h3>Options</h3>
+                    <input type="checkbox" id="includeBackground"><label>Include Background</label>
+                    <h4>Background Color:</h4>
+                    <div id="colorType">
+                        <input type="radio" name="colorType" value="solid"><label>Solid</label>
+                        <input type="radio" name="colorType" value="gradient"><label>Gradient</label>
+                        <div id="colorStops">
+                            <button class="jscolor">Color 1</button>
+                            <button class="jscolor">Color 2</button>
+                            <button class="jscolor">Color 3</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
 
     </div>
     <div id="arrowContainer">
         <p class="downArrow"></p>
     </div>
-    <script type="module" src="js/loader.js"></script>
 </body></html>
