@@ -56,7 +56,6 @@ function update() {
     requestAnimationFrame(update);
     updateTime(audio.element.currentTime, currentSongDuration);
 
-    console.log(includeBackground.checked);
     audio.analyser.getByteFrequencyData(audio.data);
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

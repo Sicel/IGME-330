@@ -85,7 +85,7 @@ button {
 }
 
 #backgroundColor {
-    display: flex;
+    display: none;
     align-content: center;
     justify-content: center;
 }
