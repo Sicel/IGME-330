@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Audio Visualizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script type="module" src="js/loader.js"></script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="controls">
+        <p>ghfghfdghfdgh</p>
+
+        <div id="searchControl">
+            <input type="search" v-model='searchTerm'>
+            <button @click='search'>Search</button>
+        </div>
+        <div id="audioControls">
+            <div class="controlHeading" data-showing="false">
+                <p class="downArrow"></p>
+                <h1>Audio</h1>
+            </div>
+            <div class="controlSection">
+                <section id="audioInfo">
+                    <p id="audioTime">0:00 / 3:42</p>
+                    <div id="songAndPlay">
+                        <audio src='audio/glass%20animals%20flip.mp3'></audio>
+                        <p class="control">Song:
+                            <select id="songSelect">
+                                <option selected value="audio/glass%20animals%20flip.mp3">Glass Animals - Flip</option>
+                                <option value="audio/Apashe%20-%20Lacrimosa.mp3">Apashe - Lacrimosa</option>
+                                <option value='audio/Confetti%20-%20Rob%20A%20Bank.mp3'>Confetti - Rob A Bank</option>
+                            </select>
+                        </p>
+                        <button id="play" class="control" data-playing="no">Play</button>
+                    </div>
+                </section>
+
+                <h3 class="sectionHeader">Effects</h3>
+                <section class="effects">
+
+                    <div class="control">
+                        <input type="checkbox" id="distortion">
+                        <label title="Distorts the audio (set to 1 to really see the high frequency circle)">Distortion</label>
+                    </div>
+                    <div class="control effectInfo" id="distortionInfo">
+                        <label>Amount:</label>
+                        <div class="effectRange">
+                            <input type="range" min="0" max="100" value="0" id="distortionSlider">
+                            <label id="distortionAmount">0</label>
+                        </div>
+                    </div>
+
+                    <div class="control">
+                        <input type="checkbox" id="lowShelf">
+                        <label title="Makes things bass-y">Low Shelf Filter</label>
+                    </div>
+                    <div class="control effectInfo" id="lowShelfInfo">
+                        <label title="Max frequency">Frequency Cutoff:</label>
+                        <div class="effectRange" id="lowShelfRange">
+                            <input type="range" min="0" max="1000" value="1000" id="lowShelfSlider">
+                            <label id="lowShelfAmount">1000</label>
+                        </div>
+                    </div>
+
+                    <div class="control">
+                        <input type="checkbox" id="highShelf">
+                        <label title="Makes things not bass-y">High Shelf Filter</label>
+                    </div>
+                    <div class="control effectInfo" id="highShelfInfo">
+                        <label title="Min Frequency">Frequency Cutoff:</label>
+                        <div class="effectRange">
+                            <input type="range" min="1000" max="2000" value="1000" id="highShelfSlider">
+                            <label id="highShelfAmount">1000</label>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!--
+                <h3 class="sectionHeader">Options</h3>
+                <section class="options">
+                </section>
+                -->
+            </div>
+        </div>
+
+        <div id="visualControls">
+            <div class="controlHeading" data-showing="false">
+                <p class="downArrow"></p>
+                <h1>Visual</h1>
+            </div>
+            <div class="controlSection">
+
+                <h3 class="sectionHeader">Effects</h3>
+                <section class="effects">
+                    <div class="control">
+                        <label title="How the shapes interact with each other">Blend Mode:</label>
+                        <select id="mode"></select>
+                    </div>
+                    <div class="control">
+                        <label title="The type of gradient the circles use">Gradient Mode:</label>
+                        <div id="gradModeSelection">
+                            <input type="radio" name="gradMode" value="grad" checked><label>Rainbow</label>
+                            <input type="radio" name="gradMode" value="rgb"><label>Red Green Blue (RGB)</label>
+                        </div>
+                    </div>
+                </section>
+
+                <h3 class="sectionHeader">Options</h3>
+                <section class="options">
+                    <div class="control">
+                        <input type="checkbox" id="includeBackground">
+                        <label title="Includes background to the blend mode">Include Background</label>
+                    </div>
+                    <div id="backgroundColor" class="control">
+                        <label title="Background color">Background Color:</label>
+                        <input id="colorPicker" class="jscolor {valueElement:null, width: 100}">
+                    </div>
+                    <div class="control">
+                        <input type="checkbox" id="quadCurves">
+                        <label title="Use quadratic curves instead">Quadratic Curves</label>
+                    </div>
+                    <!--
+                    <div id="colorType">
+                        <input type="radio" name="colorType" value="solid"><label>Solid</label>
+                        <input selected type="radio" name="colorType" value="gradient"><label>Gradient</label>
+                    </div>
+                    -->
+                </section>
+            </div>
+        </div>
+
+    </div>
+    <div id="arrowContainer" title="Show controls">
+        <p class="downArrow"></p>
+    </div>
+</body></html>

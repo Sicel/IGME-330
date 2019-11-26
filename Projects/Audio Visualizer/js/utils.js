@@ -1,7 +1,5 @@
+// Formats the time (mm:ss)
 export function convertToTime(float) {
-    //if (float == 0)
-    //    return '0:00';
-
     let rounded = Math.floor(float);
     let minutes = Math.floor(rounded / 60);
     let seconds = rounded % 60;

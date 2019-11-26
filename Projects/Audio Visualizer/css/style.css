@@ -64,18 +64,32 @@ body {
     animation: ease 1s paused;
 }
 
+.control * {
+    margin: 0 3px 3px 0;
+}
+
+
 #songAndPlay {
     display: inline-flex;
 }
 
-.effects,
-.options {
-    padding-top: 5px;
+.effects div,
+.options div {
+    padding-top: 0;
 }
 
-.effects *,
-.options * {
-    padding-top: 1px;
+.effectInfo {
+    display: none;
+}
+
+.effectRange {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.effectRange * {
+    margin: 0 2px;
 }
 
 button {
@@ -93,8 +107,6 @@ button {
 #backgroundColor p {
     margin-right: 5px;
 }
-
-.control {}
 
 #arrowContainer {
     transform: translate(0, -61px);
@@ -119,6 +131,7 @@ button {
     -webkit-transform: rotate(45deg);
 }
 
+/*
 @media screen and (max-width: 600px) {
     #controls {
         transform: translate(0, 0.5px);
@@ -156,3 +169,4 @@ button {
         -webkit-transform: rotate(-45deg);
     }
 }
+*/

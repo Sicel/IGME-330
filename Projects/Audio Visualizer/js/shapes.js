@@ -1,3 +1,4 @@
+// Shapes able to be drawn on the canvas
 class Shape {
     constructor(x = 0, y = 0, speed = .1, span = 10, color = "black") {
         this.x = x;
@@ -36,7 +37,7 @@ export class Circle extends Shape {
         ctx.restore();
         this.radius += this.radius * this.speed;
     }
-    
+
     drawRotating(ctx, locX = ctx.canvas.width / 2, locY = ctx.canvas.height / 2, radius = 3, lineWidth = 10) {
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -53,7 +54,7 @@ export class Circle extends Shape {
     radius() {
         return this.radius;
     }
-    
+
     speed() {
         return this.speed;
     }
@@ -63,15 +64,33 @@ export class Line extends Shape {
     constructor(speed = 1.5, x = 0, y = 0, span = 10, color = "black") {
         super(x = 0, y = 0, speed = .1, span = 10, color = "black");
     }
-    
-    draw(ctx, startX, startY, endX , endY) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(endX, endY);
-            ctx.closePath();
-            ctx.lineWidth = this.span;
-            ctx.stroke();
-            ctx.restore();
+
+    draw(ctx, startX, startY, endX, endY) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.closePath();
+        ctx.lineWidth = this.span;
+        ctx.stroke();
+        ctx.restore();
     }
+}
+
+export class QuadCurve extends Shape {
+    constructor(speed = 1.5, x = 0, y = 0, span = 10, color = "black") {
+        super(x = 0, y = 0, speed = .1, span = 10, color = "black");
+    }
+
+    draw(ctx, startX, startY, controlX, controlY, endX, endY) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.quadraticCurveTo(controlX, controlY, endX, endY);
+        ctx.closePath();
+        ctx.lineWidth = this.span;
+        ctx.stroke();
+        ctx.restore();
+    }
+
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Audio Visualizer</title>
+    <!--<link rel="stylesheet" href="css/style.css" />-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script type="module" src="js/loader.js"></script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="controls">
+        <audio controls v-bind:src="selectedSong"></audio>
+        <select @change="console.log(selectedSong)" v-model="selectedSong">
+            <option disabled>Please Select a song</option>
+            <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
+        </select>
+    </div>
+    <div id="arrowContainer" title="Show controls">
+        <p class="downArrow"></p>
+    </div>
+</body></html>
