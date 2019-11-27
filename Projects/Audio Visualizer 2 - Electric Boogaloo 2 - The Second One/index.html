@@ -13,11 +13,30 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="controls">
-        <audio controls v-bind:src="selectedSong"></audio>
-        <select @change="console.log(selectedSong)" v-model="selectedSong">
-            <option disabled>Please Select a song</option>
-            <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
-        </select>
+        <div id="audioControls">
+            <audio controls v-bind:src="selectedSong"></audio>
+            <select @change="console.log(selectedSong)" v-model="selectedSong">
+                <option disabled>Please Select a song</option>
+                <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
+            </select>
+        </div>
+
+        <div id="visualControls">
+            <label>Blend Mode</label>
+            <select @change="console.log(selectedBlendMode)" v-model="selectedBlendMode">
+                <option v-for="mode in blendModes" v-bind:value="mode">{{ mode }}</option>
+            </select>
+
+            <label>Gradient Mode</label>
+            <input type="radio" value="grad" v-model="gradMode"><label>Rainbow</label>
+            <input type="radio" value="rgb" v-model="gradMode"><label>Red Green Blue</label>
+
+            <label>Background Color</label>
+            <input type="text" id="colorPicker" v-bind:value="backgroundColor" @mousedown="backgroundColor = $event.target.value" class="jscolor { width: 100, onFineChange:'controls.backgroundColor = this; console.log(controls.backgroundColor)'}">
+            <label>Color is {{backgroundColor}}</label>
+            <!--<color-picker></color-picker>-->
+        </div>
+
     </div>
     <div id="arrowContainer" title="Show controls">
         <p class="downArrow"></p>

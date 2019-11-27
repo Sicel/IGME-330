@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>RiTa - 4</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rita/1.3.89/rita-full.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>RiTa - 4</h1>
+    <p>Context-free grammars</p>
+    <section>
+        <button>Expand Grammar from &lt;start> symbol !</button>
+        <p id="output">It was quite a dark and stormy night!</p>
+    </section>
+    <script>
+        let darkGrammar = { // NEW
+            "<start>": ["It <verb-phrase> a <adj1> and <adj2> <noun>! <interjection>"],
+            "<verb-phrase>": ["<verb> <pre-determiner>"],
+            "<verb>": ["was", "wasn't"],
+            "<pre-determiner>": ["such", "rather", "quite"],
+            "<adj1>": ["bright", "cold", "cloudy", "dark [10]", "overcast", "sunny"],
+            "<adj2>": ["dry", "frigid", "hot", "rainy", "stormy [10]", "wet"],
+            "<noun>": ["afternoon", "day", "mid-day", "morning", "night", "twilight"],
+            "<interjection>": ["****", "****", "****", "Son of a *****", "*****", "**** me"]
+        };
+
+        let output = document.querySelector("#output");
+        let grammar = new RiGrammar(darkGrammar); // NEW
+        let button = document.querySelector("button");
+        button.onclick = doClick;
+        button.dispatchEvent(new Event("click"));
+
+
+        function doClick() {
+            let story = grammar.expand();
+            output.innerHTML = story;
+        }
+    </script>
+</body></html>

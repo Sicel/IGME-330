@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Load Text - Drag & Drop</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        #dropbox {
+            width: 70%;
+            min-height: 300px;
+            border: 5px groove gray;
+        }
+
+        .hover {
+            background-color: rgba(0, 191, 165, .04);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Load Text - Drag & Drop</h1>
+    <section>
+        <canvas id="dropbox">Drag a text file onto me!</canvas>
+        <div id="keywords"></div>
+    </section>
+    <script>
+        let dropbox = document.querySelector("#dropbox");
+        let keywords = document.querySelector("#keywords");
+        let ctx = dropbox.getContext("2d");
+        let maxFontSize = 36;
+        let minFontSize = 10;
+        let wordsShowing = 0;
+        let maxWordsShowing = 20;
+        let highestCount;
+        dropbox.ondragenter = onDragenter;
+        dropbox.ondragover = onDragover;
+        dropbox.ondrop = onDrop;
+
+
+        function onDragenter(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.classList.add("hover");
+        }
+
+        function onDragover(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+        function onDrop(e) {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            wordsShowing = 0;
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.classList.remove("hover");
+            let file = e.dataTransfer.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = dataLoaded;
+                reader.readAsText(file);
+            }
+        }
+
+        function dataLoaded(e) {
+            const stopwords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren't", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can't", "cannot", "could", "couldn't", "did", "didn't", "do", "does", "doesn't", "doing", "don't", "down", "during", "each", "few", "for", "from", "further", "had", "hadn't", "has", "hasn't", "have", "haven't", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "isn't", "it", "it's", "its", "itself", "let's", "me", "more", "most", "mustn't", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "shan't", "she", "she'd", "she'll", "she's", "should", "shouldn't", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn't", "we", "we'd", "we'll", "we're", "we've", "were", "weren't", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves"];
+            let counts = {};
+            let s = e.target.result;
+
+            // 1- create an array of words from the loaded string
+            let words = s.split(/\W+/);
+
+            // 2 - loop through array:
+            for (let w of words) {
+                w = w.toLowerCase();
+
+                // A - get rid of stop words
+                if (stopwords.includes(w))
+                    continue;
+
+                // B - get rid of numbers
+                if (/\d+/.test(w))
+                    continue;
+
+                // C - get rid of 1 character words
+                if (w.length < 2)
+                    continue;
+                // D - count up frequency of each word and store values in a dictionary (i.e. Object)
+                if (counts[w] == undefined) {
+                    counts[w] = 1;
+                } else {
+                    counts[w]++;
+                }
+            }
+
+            // 3 - grab keys of dictionary and sort them by frequency of their "count" in the dictionary
+            let keys = Object.keys(counts);
+            keys.sort((a, b) => {
+                let countA = counts[a];
+                let countB = counts[b];
+                return countB - countA;
+            });
+
+            highestCount = counts[keys[0]];
+
+            // 4 - loop through sorted keys and display frequency of each word on page
+            keywords.innerHTML = "";
+            for (let k of keys) {
+                let p = document.createElement("p");
+                p.innerHTML = `${k} : ${counts[k]}`;
+                keywords.appendChild(p);
+
+                if (Math.random() > 0.5 && wordsShowing < maxWordsShowing) {
+                    displayWords(ctx, k, counts[k]);
+                    wordsShowing++;
+                }
+            }
+        }
+
+        function displayWords(ctx, text, size) {
+            let randX = Math.floor(Math.random() * ctx.canvas.width);
+            let randY = Math.floor(Math.random() * ctx.canvas.height);
+            let fontSize = Math.floor((size / highestCount) * maxFontSize);
+            if (fontSize <= minFontSize) fontSize = minFontSize;
+            ctx.font = `${fontSize}px Comic Sans MS`;
+            ctx.textAlign = "center";
+            ctx.fillText(text, randX, randY);
+        }
+    </script>
+</body></html>

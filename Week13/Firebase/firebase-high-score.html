@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>High Score App</title>
+    <style>
+        * {
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        #scoreElement {
+            font-size: 3em;
+            width: 5em;
+            height: 2.5em;
+            color: white;
+            background-color: black;
+            border: 5px solid gray;
+            text-align: center;
+            padding-top: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="firebase-test.html">
+        <p>&larr;firebase-test.html</p>
+    </a>
+    <a href="firebase-admin.html">
+        <p>firebase-admin.html&rarr;</p>
+    </a>
+
+    <p id="scoreElement">0</p>
+    <p>Name --> <input type="text" value="MADMAX" id="nameField"></p>
+    <button id="clickMeButton">Click Me!</button>
+    <button id="saveScoreButton">Save High Score</button>
+
+    <!-- #1 - link to Firebase goes here  -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+
+    <script type="module">
+
+        /* #2 - The rest of the Firebase setup code goes here */
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBgda5U0NVCxI5IBbMcICa6b4mY5AasD8U",
+            authDomain: "high-scores-c7d00.firebaseapp.com",
+            databaseURL: "https://high-scores-c7d00.firebaseio.com",
+            projectId: "high-scores-c7d00",
+            storageBucket: "high-scores-c7d00.appspot.com",
+            messagingSenderId: "648026158709",
+            appId: "1:648026158709:web:34feb8e90b247638ec2a3c",
+            measurementId: "G-70K3QETWJL"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+            
+        //saveScoreButton.onclick = _ => {
+        //    firebase.database().ref('scores').push({
+        //        userID: nameField.value,
+        //        score: score
+	    //  });
+        //};
+	
+        saveScoreButton.onclick = _ => {
+            let path = 'scores2/' + nameField.value;
+            firebase.database().ref(path).set({ // over-writes old values
+                userID: nameField.value,
+                score: score
+            });
+        };
+        
+        console.log(firebase); // #3 - make sure firebase is loaded
+	
+        let score = 0;
+	
+        clickMeButton.onclick = _ => {
+            score++;
+            scoreElement.innerText = score;
+        };
+    </script>
+
+</body></html>

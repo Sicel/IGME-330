@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>RiTa-2</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rita/1.3.94/rita-full.js" integrity="sha256-JiBQUIqNWcLOeJ9hzQE/fu+9+m3gg0Vhndm3+q+2dBs=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h1>RiTa-2</h1>
+    <section>
+        <p><textarea cols="40" rows="7">It was a dark and stormy night ...</textarea></p>
+        <p id="output"></p>
+    </section>
+    <script>
+        const POS = {
+            "cc": "Coordinating conjunction",
+            "dt": "Determiner",
+            "jj": "Adjective",
+            "nn": "Noun, singular or mass",
+            "prp": "Personal pronoun",
+            "vbd": "Verb, past tense"
+        };
+
+        let input = document.querySelector("textarea");
+        let output = document.querySelector("#output");
+
+        input.oninput = doInput; // called whenever the content of the field changes
+        input.onchange = doChange; // called when the field loses focus or when the return key is pressed
+        input.dispatchEvent(new Event("input")); // calls doInput() when the page first loads
+
+        function doInput(e) {
+            let text = e.target.value;
+            if (text.length == 0) return;
+            let rs = RiString(text);
+            let words = rs.words();
+
+            //let s = "<ul>";
+            let s = "";
+            for (let i = 0; i < words.length; i++) {
+                let item = words[i];
+                let random = Math.floor(Math.random() * RiTa.similarByLetter(item).length);
+                let similar = RiTa.similarByLetter(item)[random];
+                if (RiTa.isPunctuation(item)) continue;
+                //if (similar == undefined) similar = "??";
+                if (rs.posAt(i) == "nnp" || rs.posAt(i) == "nnps")
+                    s += similar + " ";
+                else
+                    s += words[i] + " ";
+                //s += `<li><b>${item}</b> : ${similar}</li>`;
+            }
+            //s += "</ul>";
+            output.innerHTML = s;
+        }
+
+        function doChange(e) {
+            output.innerHTML = "The input field no longer has focus!";
+        }
+    </script>
+</body></html>

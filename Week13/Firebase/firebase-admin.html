@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Firebase Admin</title>
+</head>
+
+<body>
+    <a href="firebase-high-score.html">
+        <p>&larr;firebase-high-score.html</p>
+    </a>
+    <a href="firebase-test.html">
+        <p>firebase-test.html&rarr;</p>
+    </a>
+
+    <h1 id="madMaxScore">MADMAX SCORE: </h1>
+    <h1>High Scores</h1>
+    <ol id="scoresList">
+        <li>No data yet!</li>
+    </ol>
+
+    <!-- #1 - link to Firebase goes here  -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+
+
+    <script>
+        let madMaxScore = document.querySelector("#madMaxScore");
+
+        /* #2 - The rest of the Firebase setup code goes here */
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyBgda5U0NVCxI5IBbMcICa6b4mY5AasD8U",
+            authDomain: "high-scores-c7d00.firebaseapp.com",
+            databaseURL: "https://high-scores-c7d00.firebaseio.com",
+            projectId: "high-scores-c7d00",
+            storageBucket: "high-scores-c7d00.appspot.com",
+            messagingSenderId: "648026158709",
+            appId: "1:648026158709:web:34feb8e90b247638ec2a3c",
+            measurementId: "G-70K3QETWJL"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        console.log(firebase); // #3 - make sure firebase is loaded
+
+        // #4 This is where the magic happens!
+        firebase.database().ref("scores2").on("value", dataChanged, firebaseError);
+        firebase.database().ref("scores2/MADMAX").on("value", madmaxChanged, firebaseError);
+
+        function madmaxChanged(data) {
+            let obj = data.val();
+            console.log(`madmaxChanged = ${obj}`);
+            console.log(`userName = ${obj.userID}`);
+            console.log(`score= ${obj.score}`);
+            madMaxScore.innerHTML = "MADMAX SCORE: " + obj.score;
+        }
+
+        function firebaseError(error) {
+            console.log(error);
+        }
+
+        function dataChanged(data) {
+            let obj = data.val();
+            console.log(obj);
+            let bigString = "";
+            for (let key in obj) { // use for..in to interate through object keys
+                let row = obj[key];
+                bigString += `<li>${row.userID } :  ${row.score}</li>`;
+                console.log(row);
+            }
+            scoresList.innerHTML = bigString;
+            sortList();
+        }
+
+        // Code taken from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_sort_list_number
+        // And modified to work here
+        function sortList() {
+            let i, switching, b, shouldSwitch;
+            switching = true;
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // start by saying: no switching is done:
+                switching = false;
+                b = scoresList.getElementsByTagName("LI");
+                // Loop through all list-items:
+                for (i = 0; i < (b.length - 1); i++) {
+                    // start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /* check if the next item should
+                    switch place with the current item: */
+                    let score = b[i].innerHTML;
+                    let score2 = b[i + 1].innerHTML;
+                    let bAsInt = score.substring(score.lastIndexOf(' '));
+                    let bAsInt2 = score2.substring(score2.lastIndexOf(' '));
+                    if (Number(bAsInt) < Number(bAsInt2)) {
+                        /* if next item is numerically
+                        lower than current item, mark as a switch
+                        and break the loop: */
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch
+                    and mark the switch as done: */
+                    b[i].parentNode.insertBefore(b[i + 1], b[i]);
+                    switching = true;
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>

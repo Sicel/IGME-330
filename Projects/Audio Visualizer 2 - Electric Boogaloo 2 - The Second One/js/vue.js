@@ -1,4 +1,5 @@
-export const search = new Vue({
+import './colorPickerComponent.js'
+export const controls = new Vue({
     el: '#controls',
     data: {
         searchTerm: 'Queen - We Will Rock You',
@@ -9,8 +10,9 @@ export const search = new Vue({
             channel: " ",
             channelLink: ` `
         },
-        
+
         // Audio Controls
+        playing: false,
         checkedAudioSettings: [],
         currentAudioTime: 0,
         currentAudioLength: 0,
@@ -20,7 +22,7 @@ export const search = new Vue({
             {
                 name: "Glass Animals - Flip",
                 src: "audio/glass%20animals%20flip.mp3"
-            }, 
+            },
             {
                 name: "Apashe - Lacrimosa",
                 src: "audio/Apashe%20-%20Lacrimosa.mp3"
@@ -30,10 +32,14 @@ export const search = new Vue({
                 src: 'audio/Confetti%20-%20Rob%20A%20Bank.mp3'
             }
         ],
-        
+
         // Visual Controls
         checkedVisualSettings: [],
-        gradModes: "",
+        selectedBlendMode: "xor",
+        blendModes: ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"],
+        gradMode: "",
+        colorPickerSetup: false,
+        backgroundColor: 'FFFFFF'
     },
     methods: {
         search() {
@@ -50,12 +56,20 @@ export const search = new Vue({
                     let firstResult = json.items[0];
                     this.video.id = firstResult.id.videoId;
                     this.video.url = `https://www.youtube.com/watch?v=${this.video.id}`,
-                    this.video.title = firstResult.snippet.title,
-                    this.video.channel = firstResult.snippet.channelTitle,
-                    this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`
+                        this.video.title = firstResult.snippet.title,
+                        this.video.channel = firstResult.snippet.channelTitle,
+                        this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`
 
                     console.log(this.video);
                 })
-        } // end search
+        },
+
+        play() {
+            this.playing = !this.playing;
+        },
+
+        updateColor(jscolor) {
+            this.backgroundColor = `#${jscolor}`;
+        }
     }
 })
