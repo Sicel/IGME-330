@@ -1,8 +1,18 @@
-import './colorPickerComponent.js'
+import * as divs from './vueComponents.js';
+
 export const controls = new Vue({
     el: '#controls',
+    components: {
+        'control': divs.controlSection
+    },
     data: {
-        searchTerm: 'Queen - We Will Rock You',
+        //
+        showControls: false,
+        searchTerms: {
+            artist: "Queen",
+            track: "Bohemian Rhapsody"
+        },
+        searchTerm: 'Queen - Bohemian Rhapsody',
         video: {
             id: 0,
             url: ` `,
@@ -10,8 +20,10 @@ export const controls = new Vue({
             channel: " ",
             channelLink: ` `
         },
+        songLyrics: "",
 
         // Audio Controls
+        audio: divs.audioDiv,
         playing: false,
         checkedAudioSettings: [],
         currentAudioTime: 0,
@@ -32,19 +44,43 @@ export const controls = new Vue({
                 src: 'audio/Confetti%20-%20Rob%20A%20Bank.mp3'
             }
         ],
+        distortionEnabled: false,
+        distortionAmount: 0,
+        lowShelfEnabled: false,
+        lowShelfAmount: 0,
+        highShelfEnabled: false,
+        highShelfAmount: 1000,
+
 
         // Visual Controls
+        visual: divs.visualDiv,
         checkedVisualSettings: [],
         selectedBlendMode: "xor",
         blendModes: ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"],
         gradMode: "",
         colorPickerSetup: false,
-        backgroundColor: 'FFFFFF'
+        includeBackground: false,
+        backgroundColor: 'FFFFFF',
+        quadCurves: false
     },
     methods: {
         search() {
+            fetch(`https://orion.apiseeds.com/api/music/lyric/${this.searchTerms.artist}/${this.searchTerms.track}?apikey=t0fQtQW56iJKDN85vC3lrI1y3m0hooWfCieVWRcJz7GNg72lhZVCPrjEG1RxWDKk`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error(`ERROR: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(json => {
+                    //this.result = json.data;
+                    this.searchTerm = `${this.searchTerms.artist} - ${this.searchTerms.track}`;
+                    this.songLyrics = json.result.track.text;
+                    console.log(this.songLyrics);
+                });
+
             //if (! this.term.trim()) return;
-            fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${this.searchTerm}&type=video&maxResults=10&key=AIzaSyBCPZ85si77Z6EjGzx2jTljvneFX760l8Q`)
+            fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${this.searchTerms.artist} - ${this.searchTerms.track}&type=video&maxResults=10&key=AIzaSyDNoaU5HfiTlQLbMIi8_zwDpP560120zzE`)
                 .then(response => {
                     if (!response.ok) {
                         throw Error(`ERROR: ${response.statusText}`);
@@ -55,10 +91,10 @@ export const controls = new Vue({
                     //this.result = json.data;
                     let firstResult = json.items[0];
                     this.video.id = firstResult.id.videoId;
-                    this.video.url = `https://www.youtube.com/watch?v=${this.video.id}`,
-                        this.video.title = firstResult.snippet.title,
-                        this.video.channel = firstResult.snippet.channelTitle,
-                        this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`
+                    this.video.url = `https://www.youtube.com/embed/${this.video.id}?autoplay=0`;
+                    this.video.title = firstResult.snippet.title;
+                    this.video.channel = firstResult.snippet.channelTitle;
+                    this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`;
 
                     console.log(this.video);
                 })
@@ -68,8 +104,22 @@ export const controls = new Vue({
             this.playing = !this.playing;
         },
 
-        updateColor(jscolor) {
-            this.backgroundColor = `#${jscolor}`;
+        setUpColor(e) {
+            if (this.colorPickerSetup) return;
+
+            e.target.jscolor.onFineChange = function () {
+                updateColor(e.target.jscolor);
+            }
+
+            this.colorPickerSetup = true;
+        },
+
+        unhideControls() {
+            this.showControls = !this.showControls;
         }
     }
 })
+
+function updateColor(jscolor) {
+    controls.backgroundColor = `#${jscolor}`;
+}

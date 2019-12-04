@@ -13,32 +13,51 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="controls">
-        <div id="audioControls">
+        <div id="ui">
+            <iframe width="560" height="315" v-bind:src="video.url"></iframe>
             <audio controls v-bind:src="selectedSong"></audio>
             <select @change="console.log(selectedSong)" v-model="selectedSong">
                 <option disabled>Please Select a song</option>
                 <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
             </select>
+            <input v-model="searchTerms.artist" placeholder="Artist">
+            <input v-model="searchTerms.track" placeholder="Track">
+            <button @click="search()">Get Lyrics</button>
+            <control title="Audio" v-bind:effects="audio.effects">
+            </control>
+            <!---
+            <div id="audioControls">
+                <audio controls v-bind:src="selectedSong"></audio>
+                <select @change="console.log(selectedSong)" v-model="selectedSong">
+                    <option disabled>Please Select a song</option>
+                    <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
+                </select>
+            </div>
+
+            <div id="visualControls">
+                <label>Blend Mode</label>
+                <select v-model="selectedBlendMode">
+                    <option v-for="mode in blendModes" v-bind:value="mode">{{ mode }}</option>
+                </select>
+
+                <label>Gradient Mode</label>
+                <input type="radio" value="grad" v-model="gradMode"><label>Rainbow</label>
+                <input type="radio" value="rgb" v-model="gradMode"><label>Red Green Blue</label>
+
+                <input type="checkbox" v-model="includeBackground">
+                <label>Include Background</label>
+
+                <label>Background Color</label>
+                <input type="text" id="colorPicker" @click="setUpColor($event)" class="jscolor { width: 100}">
+
+                <input type="checkbox" v-model="quadCurves">
+                <label>Use Quadratic Curve</label>
+            </div>
+        --->
         </div>
 
-        <div id="visualControls">
-            <label>Blend Mode</label>
-            <select @change="console.log(selectedBlendMode)" v-model="selectedBlendMode">
-                <option v-for="mode in blendModes" v-bind:value="mode">{{ mode }}</option>
-            </select>
-
-            <label>Gradient Mode</label>
-            <input type="radio" value="grad" v-model="gradMode"><label>Rainbow</label>
-            <input type="radio" value="rgb" v-model="gradMode"><label>Red Green Blue</label>
-
-            <label>Background Color</label>
-            <input type="text" id="colorPicker" v-bind:value="backgroundColor" @mousedown="backgroundColor = $event.target.value" class="jscolor { width: 100, onFineChange:'controls.backgroundColor = this; console.log(controls.backgroundColor)'}">
-            <label>Color is {{backgroundColor}}</label>
-            <!--<color-picker></color-picker>-->
+        <div id="arrowContainer" title="Show controls" @click="unhideControls()">
+            <p class="downArrow"></p>
         </div>
-
-    </div>
-    <div id="arrowContainer" title="Show controls">
-        <p class="downArrow"></p>
     </div>
 </body></html>
