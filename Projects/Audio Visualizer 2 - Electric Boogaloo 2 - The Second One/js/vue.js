@@ -3,7 +3,7 @@ import * as divs from './vueComponents.js';
 export const controls = new Vue({
     el: '#controls',
     components: {
-        'control': divs.controlSection
+        'audioControls': divs.audioDiv
     },
     data: {
         //
@@ -44,12 +44,30 @@ export const controls = new Vue({
                 src: 'audio/Confetti%20-%20Rob%20A%20Bank.mp3'
             }
         ],
-        distortionEnabled: false,
-        distortionAmount: 0,
-        lowShelfEnabled: false,
-        lowShelfAmount: 0,
-        highShelfEnabled: false,
-        highShelfAmount: 1000,
+        distortion: {
+            name: "Distortion",
+            sliderLabel: "Amount:",
+            enabled: false,
+            amount: 0,
+            min: 0,
+            max: 100
+        },
+        lowShelf: {
+            name: "Low Shelf Filter",
+            sliderLabel: "Frequency Amount:",
+            enabled: false,
+            amount: 0,
+            min: 0,
+            max: 1000
+        },
+        highShelf: {
+            name: "High Shlef Filter",
+            sliderLabel: "Frequency Amount:",
+            enabled: false,
+            amount: 1000,
+            min: 1000,
+            max: 2000
+        },
 
 
         // Visual Controls

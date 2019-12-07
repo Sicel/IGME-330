@@ -23,11 +23,10 @@
             <input v-model="searchTerms.artist" placeholder="Artist">
             <input v-model="searchTerms.track" placeholder="Track">
             <button @click="search()">Get Lyrics</button>
-            <control title="Audio" v-bind:effects="audio.effects">
-            </control>
+            <audioControls title="Audio">
+            </audioControls>
             <!---
-            <div id="audioControls">
-                <audio controls v-bind:src="selectedSong"></audio>
+            <div id="audioControls"><audio controls v-bind:src="selectedSong"></audio>
                 <select @change="console.log(selectedSong)" v-model="selectedSong">
                     <option disabled>Please Select a song</option>
                     <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Mapbox Simple</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+    <script src="cofee-data.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+        button {
+            position: absolute;
+            color: red;
+            font-weight: bold;
+            height: 30px;
+            width: 140px;
+            z-index: 100;
+        }
+
+        #worldZoomButton {
+            top: 70px;
+            left: 10px;
+        }
+
+        #defaultZoomButton {
+            top: 110px;
+            left: 10px;
+        }
+
+        #buildingZoomButton {
+            top: 150px;
+            left: 10px;
+        }
+
+        #isometricView {
+            top: 190px;
+            left: 10px;
+        }
+
+        .marker {
+            background-image: url(coffee-icon.png);
+            background-color: red;
+            background-size: cover;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <p><button id="worldZoomButton">World Zoom (1)</button></p>
+    <p><button id="defaultZoomButton">Default Zoom (16)</button></p>
+    <p><button id="buildingZoomButton">World Zoom (20)</button></p>
+    <p><button id="isometricView">Isometric View (18)</button></p>
+    <script>
+        var map;
+        mapboxgl.accessToken = 'pk.eyJ1IjoibmVtZWxsMTIzIiwiYSI6ImNrMnR0ZGlhYjFmMHczb252anF2cW1zZWEifQ.r2yNwAur8OSE0iTkAOVuTQ';
+
+
+        function initMap() {
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/satellite-v9',
+                center: [-77.6799, 43.083848],
+                zoom: 16,
+            });
+        }
+
+        initMap();
+
+        document.querySelector("#worldZoomButton").onclick = _ => map.setZoom(1);
+        document.querySelector("#defaultZoomButton").onclick = _ => {
+            map.setZoom(16)
+                .setPitch(0)
+                .setCenter([-77.6799, 43.083848]);
+        }
+        document.querySelector("#buildingZoomButton").onclick = _ => {
+            map.setZoom(20)
+                .setPitch(0)
+                .setCenter([-77.6799, 43.083848]);
+        }
+        document.querySelector("#isometricView").onclick = _ => {
+            map.setZoom(18)
+                .setPitch(45)
+                .setCenter([-77.6799, 43.083848]);
+        }
+
+        var geojson = {
+            type: 'FeatureCollection',
+            features: []
+        }
+
+        coffeeShops.forEach(function(shop) {
+            var el = document.createElement('div');
+            el.className = 'marker';
+
+            new mapboxgl.Marker(el)
+                .setLngLat([shop.longitude, shop.latitude])
+                .setPopup(new mapboxgl.Popup({
+                        offset: 25
+                    })
+                    .setHTML('<h3>' + shop.title + '</h3>'))
+                .addTo(map);
+        });
+    </script>
+</body></html>
