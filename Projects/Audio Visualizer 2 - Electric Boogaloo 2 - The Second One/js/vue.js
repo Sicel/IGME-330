@@ -1,12 +1,19 @@
-import * as divs from './vueComponents.js';
+//import * as divs from './vueComponents.js';
+import * as components from './vueComponents.js';
 
-export const controls = new Vue({
+export const controls_v = new Vue({
     el: '#controls',
     components: {
-        'audioControls': divs.audioDiv
+        'audioElement': components.audioDiv,
+        'visualElement': components.visualDiv
     },
     data: {
         //
+        inTypes: {
+            slider: components.slider,
+            colorPicker: components.colorPicker
+        },
+        audioElement: components.audioDiv,
         showControls: false,
         searchTerms: {
             artist: "Queen",
@@ -23,7 +30,7 @@ export const controls = new Vue({
         songLyrics: "",
 
         // Audio Controls
-        audio: divs.audioDiv,
+        //audio: components.audioDiv,
         playing: false,
         checkedAudioSettings: [],
         currentAudioTime: 0,
@@ -44,34 +51,35 @@ export const controls = new Vue({
                 src: 'audio/Confetti%20-%20Rob%20A%20Bank.mp3'
             }
         ],
-        distortion: {
-            name: "Distortion",
-            sliderLabel: "Amount:",
-            enabled: false,
-            amount: 0,
-            min: 0,
-            max: 100
+        audioSliders: [
+            {
+                name: "Distortion",
+                sliderLabel: "Amount:",
+                enabled: false,
+                amount: 0,
+                min: 0,
+                max: 100
         },
-        lowShelf: {
-            name: "Low Shelf Filter",
-            sliderLabel: "Frequency Amount:",
-            enabled: false,
-            amount: 0,
-            min: 0,
-            max: 1000
+            {
+                name: "Low Shelf Filter",
+                sliderLabel: "Frequency Amount:",
+                enabled: false,
+                amount: 0,
+                min: 0,
+                max: 1000
         },
-        highShelf: {
-            name: "High Shlef Filter",
-            sliderLabel: "Frequency Amount:",
-            enabled: false,
-            amount: 1000,
-            min: 1000,
-            max: 2000
-        },
+            {
+                name: "High Shlef Filter",
+                sliderLabel: "Frequency Amount:",
+                enabled: false,
+                amount: 1000,
+                min: 1000,
+                max: 2000
+        }],
 
 
         // Visual Controls
-        visual: divs.visualDiv,
+        //visual: divs.visualDiv,
         checkedVisualSettings: [],
         selectedBlendMode: "xor",
         blendModes: ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"],
@@ -79,7 +87,22 @@ export const controls = new Vue({
         colorPickerSetup: false,
         includeBackground: false,
         backgroundColor: 'FFFFFF',
-        quadCurves: false
+        quadCurves: false,
+        visualOptions: {
+            colorPicker: {
+                name: "Include Background",
+                label: "Background Color",
+                enabled: false,
+                color: '',
+                el: null,
+                picker: {}
+            }
+        }
+    },
+    mounted() {
+        //this.visualOptions.colorPicker.picker = new CP(this.$refs.colorPicker);
+        console.log(this.$refs);
+        //components.colorPicker.mounted();
     },
     methods: {
         search() {

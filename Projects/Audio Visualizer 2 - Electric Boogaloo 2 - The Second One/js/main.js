@@ -35,7 +35,7 @@ let ctx = document.querySelector("#canvas").getContext("2d"),
 
 // Initializes everything
 function init() {
-    setupUI(audio, ctx);
+    //setupUI(audio, ctx);
     ctx = document.querySelector("#canvas").getContext("2d");
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
@@ -48,7 +48,7 @@ function init() {
 
     window.onresize = resize;
 
-    update();
+    //update();
 }
 
 function update() {

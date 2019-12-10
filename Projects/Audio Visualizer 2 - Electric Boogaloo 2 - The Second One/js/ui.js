@@ -262,8 +262,8 @@ function showSection(header) {
 
 // Updates song time while playing
 export function updateTime(time, songDuration = currentSongDuration) {
-    audioTime.innerHTML = `${convertToTime(time)} / ${convertToTime(songDuration)}`;
-    currentSongDuration = songDuration;
+    //audioTime.innerHTML = `${convertToTime(time)} / ${convertToTime(songDuration)}`;
+    //currentSongDuration = songDuration;
 }
 
 // Updates background based on currentcolor chosen

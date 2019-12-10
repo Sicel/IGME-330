@@ -5,8 +5,15 @@
     <meta charset="utf-8" />
     <title>Audio Visualizer</title>
     <!--<link rel="stylesheet" href="css/style.css" />-->
+
+    <!--Color Picker-->
+    <link href="css/color-picker/color-picker.min.css" rel="stylesheet">
+    <script src="js/color-picker/color-picker.min.js"></script>
+    <!---------------->
+
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
+
     <script type="module" src="js/loader.js"></script>
 </head>
 
@@ -16,15 +23,15 @@
         <div id="ui">
             <iframe width="560" height="315" v-bind:src="video.url"></iframe>
             <audio controls v-bind:src="selectedSong"></audio>
-            <select @change="console.log(selectedSong)" v-model="selectedSong">
+            <select v-model="selectedSong">
                 <option disabled>Please Select a song</option>
                 <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
             </select>
             <input v-model="searchTerms.artist" placeholder="Artist">
             <input v-model="searchTerms.track" placeholder="Track">
             <button @click="search()">Get Lyrics</button>
-            <audioControls title="Audio">
-            </audioControls>
+            <audio-element :effects="audioSliders" :in-types="inTypes"></audio-element>
+            <visual-element :options="visualOptions" :in-types="inTypes" ref="vis"></visual-element>
             <!---
             <div id="audioControls"><audio controls v-bind:src="selectedSong"></audio>
                 <select @change="console.log(selectedSong)" v-model="selectedSong">
