@@ -1,5 +1,6 @@
 export {
-    init
+    init,
+    ctx
 };
 import {
     createAudioElement
@@ -14,16 +15,16 @@ import {
     selectedMode,
     currentColorMode,
     currentSongDuration,
-    backgroundColor,
-    includeBackground,
-    useQuadCurves,
+    //backgroundColor,
+    //includeBackground,
+    //useQuadCurves,
     updateTime
 } from './ui.js';
 import './vue.js';
 
 let ctx = document.querySelector("#canvas").getContext("2d"),
     numSamples = 128,
-    audio = createAudioElement(document.querySelector('audio'), numSamples),
+    //audio = createAudioElement(document.querySelector('audio'), numSamples),
     circles = [],
     miniCircles = [],
     maxDraw, // Max radius the circles can be
@@ -60,9 +61,9 @@ function update() {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // Colors the background
-    if (includeBackground.checked) {
+    if (backgroundColor.enabled) {
         ctx.save();
-        ctx.fillStyle = backgroundColor;
+        ctx.fillStyle = backgroundColor.color;
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.restore();
     }
@@ -172,7 +173,7 @@ function update() {
             let startY = (ctx.canvas.height / 2) + circles[0].radius * Math.sin(angle2);
             let endX = (ctx.canvas.width / 2) + circles[circles.length - 1].radius * Math.cos(angle2);
             let endY = (ctx.canvas.height / 2) + circles[circles.length - 1].radius * Math.sin(angle2);
-            if (!useQuadCurves.checked) {
+            if (!quadCurves) {
                 let line = new Line();
                 line.draw(ctx, endX, endY, startX, startY);
             } else {

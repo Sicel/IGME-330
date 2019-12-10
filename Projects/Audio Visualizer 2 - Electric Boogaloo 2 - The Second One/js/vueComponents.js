@@ -1,90 +1,155 @@
-export let audioDiv = {
+import {
+    ctx
+} from './main.js';
+
+export let controlSection = {
     props: {
-        effects: Array,
-        inTypes: Object
+        name: String,
+        section: Object,
+        effects: Object,
+        options: Object,
+    },
+    data() {
+        return {
+            showSection: false
+        }
     },
     template: `
         <div class="sControl">
-            <div class="controlHeading">
+            <div class="controlHeading" @click="showSection=!showSection">
                 <p class="downArrow"></p>
-                <h1>Audio</h1>
+                <h1 v-text="name"></h1>
             </div>
+            <template v-if="showSection">
+                <component :is="section" :effects="effects" :options="options"></component>
+            </template>
+        </div>`,
+};
+
+export let audioDiv = {
+    props: {
+        effects: Object,
+        options: Object,
+    },
+    template: `
             <div class="controlSection">
                 <h3 class="sectionHeader">Effects</h3>
-                    <hider v-for="effect in effects" :control-type="effect" :in-type="inTypes.slider"></hider> 
-            </div>
-        </div>`,
+                    <hider v-for="effect in effects.sliders" :control-type="effect">
+                        <slider :option="effect"></slider>
+                    </hider>
+                <h3 class="sectionHeader">Options</h3>
+            </div>`,
 };
 
 export let visualDiv = {
     props: {
+        effects: Object,
         options: Object,
-        inTypes: Object
     },
     template: `
-        <div class="sControl">
-            <div class="controlHeading">
-                <p class="downArrow"></p>
-                <h1>Visual</h1>
-            </div>
             <div class="controlSection">
                 <h3 class="sectionHeader">Effects</h3>
+                    <dropdown :option="effects.blendMode"></dropdown>
+                    <radio-group :option="effects.gradients"></radio-group>
+
                 <h3 class="sectionHeader">Options</h3>
-                    <!--
-                    <hider :control-type="options.colorPicker" :in-type="inTypes.colorPicker"></hider>
-                    -->
-                    <color-picker :control-type="options.colorPicker"></color-picker>
-            </div>
-        </div>`
+                    <hider :control-type="options.colorPicker">
+                        <color-picker :control-type="options.colorPicker"></color-picker>
+                    </hider>
+                    <checkbox :option="options.quadCurves"></checkbox>
+            </div>`
 }
 
-export let slider = {
+Vue.component('slider', {
     props: {
-        controlType: Object
+        option: Object
     },
     template: `
         <div class='control'>
-            <label>{{controlType.sliderLabel}}</label>
+            <label>{{option.sliderLabel}}</label>
             <div class='effectRange'>
-                <input type="range" :min='controlType.min' :max='controlType.max' v-model='controlType.amount'></input>
-                <label v-text='controlType.amount'></label>
+                <input type="range" :min='option.min' :max='option.max' v-model='option.amount'></input>
+                <label v-text='option.amount'></label>
             </div>
         </div>`
-}
+})
 
 Vue.component('hider', {
     props: {
-        inType: Object,
-        controlType: Object
+        controlType: Object,
     },
     template: `
-    <div class="controlBlock">
+    <div>
         <div class='control'>
             <input type='checkbox' v-model="controlType.enabled"></input>
             <label v-text="controlType.name"></label>
         </div>
         <template v-if="controlType.enabled">
-            <component :is="inType" :control-type="controlType"></component>
+            <slot><slot>
         </template>
     </div>`
 })
 
-export let colorPicker = {
+Vue.component('color-picker', {
     props: {
         controlType: Object
     },
     template: `
     <div id="backgroundColor" class="control">
         <label v-text="controlType.label"></label>
-        <input ref="colorPicker" type="text">
+        <input ref="colorPicker" type="color" @click="$event.preventDefault()">
     </div>`,
     mounted() {
-        this.controlType.picker = new CP(this.$refs.colorPicker);
-        this.controlType.picker.on("drag", function (color) {
-            console.log(this);
-        })
-        console.log(this.controlType);
-    }
-}
+        let self = this;
+        self.controlType.picker = new CP(this.$refs.colorPicker);
+        self.controlType.picker.on('create', function () {
+            this.source.value = self.controlType.color;
+        });
+        self.controlType.picker.on("start", function (color, controlType) {
+            this.source.value = `#${color}`;
+            self.controlType.color = `#${color}`;
+        });
+        self.controlType.picker.on("drag", function (color, controlType) {
+            this.source.value = `#${color}`;
+            self.controlType.color = `#${color}`;
+        });
+    },
+});
 
-Vue.component('color-picker', colorPicker);
+Vue.component('dropdown', {
+    props: {
+        option: Object
+    },
+    template: `
+    <div class="control">
+        <label v-text="option.name"></label>
+        <select v-model='option.selected' @change="$emit('change')">
+            <option v-for="selection in option.selections">{{ selection }}</option>
+        <select>    
+    </div>`
+})
+
+Vue.component('radio-group', {
+    props: {
+        option: Object
+    },
+    template: `
+    <div class="control">
+        <label v-text="option.name"></label>
+        <template v-for="selection in option.selections">
+            <input type='radio' :value="selection.toLowerCase()" v-model='option.current'>
+            <label v-text='selection'>
+        </template>
+    <div>`
+})
+
+Vue.component('checkbox', {
+    props: {
+        option: Object
+    },
+    template: `
+    <div class="control">
+        <input type="checkbox" v-model="option.enabled">
+        <label v-text="option.name"></label>
+    </div>`
+})

@@ -1,19 +1,17 @@
 //import * as divs from './vueComponents.js';
 import * as components from './vueComponents.js';
 
-export const controls_v = new Vue({
+const controls_v = new Vue({
     el: '#controls',
     components: {
-        'audioElement': components.audioDiv,
-        'visualElement': components.visualDiv
+        'controlSection': components.controlSection
     },
     data: {
         //
-        inTypes: {
-            slider: components.slider,
-            colorPicker: components.colorPicker
+        sections: {
+            audio: components.audioDiv,
+            visual: components.visualDiv
         },
-        audioElement: components.audioDiv,
         showControls: false,
         searchTerms: {
             artist: "Queen",
@@ -51,58 +49,70 @@ export const controls_v = new Vue({
                 src: 'audio/Confetti%20-%20Rob%20A%20Bank.mp3'
             }
         ],
-        audioSliders: [
-            {
+        audioEffects: {
+            sliders: [{
                 name: "Distortion",
                 sliderLabel: "Amount:",
                 enabled: false,
                 amount: 0,
                 min: 0,
                 max: 100
-        },
-            {
+            }, {
                 name: "Low Shelf Filter",
                 sliderLabel: "Frequency Amount:",
                 enabled: false,
                 amount: 0,
                 min: 0,
                 max: 1000
-        },
-            {
-                name: "High Shlef Filter",
+            }, {
+                name: "High Shelf Filter",
                 sliderLabel: "Frequency Amount:",
                 enabled: false,
                 amount: 1000,
                 min: 1000,
                 max: 2000
-        }],
+            }]
+        },
+        audioOptions: {},
 
 
         // Visual Controls
-        //visual: divs.visualDiv,
         checkedVisualSettings: [],
         selectedBlendMode: "xor",
         blendModes: ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"],
-        gradMode: "",
-        colorPickerSetup: false,
         includeBackground: false,
-        backgroundColor: 'FFFFFF',
+        backgroundColor: '#ffffff',
         quadCurves: false,
+        visualEffects: {
+            blendMode: {
+                name: "Blend Mode",
+                enabled: true,
+                selected: "xor",
+                selections: ["source-atop", "destination-over", "destination-out", "lighter", "xor", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"],
+            },
+            gradients: {
+                name: "Color Gradient",
+                current: 'rainbow',
+                selections: ["Rainbow", 'RGB', 'Custom'],
+                custom: {
+                    amount: 3,
+                    colors: ['#4fdeed', '#593daa', '#0ff09f']
+                }
+            }
+        },
         visualOptions: {
             colorPicker: {
                 name: "Include Background",
                 label: "Background Color",
                 enabled: false,
-                color: '',
-                el: null,
+                color: '#ffffff',
                 picker: {}
+            },
+            quadCurves: {
+                name: "Quadratic Curve",
+                enabled: false
             }
         }
-    },
-    mounted() {
-        //this.visualOptions.colorPicker.picker = new CP(this.$refs.colorPicker);
-        console.log(this.$refs);
-        //components.colorPicker.mounted();
     },
     methods: {
         search() {
@@ -145,22 +155,18 @@ export const controls_v = new Vue({
             this.playing = !this.playing;
         },
 
-        setUpColor(e) {
-            if (this.colorPickerSetup) return;
-
-            e.target.jscolor.onFineChange = function () {
-                updateColor(e.target.jscolor);
-            }
-
-            this.colorPickerSetup = true;
-        },
-
         unhideControls() {
             this.showControls = !this.showControls;
         }
     }
 })
 
-function updateColor(jscolor) {
-    controls.backgroundColor = `#${jscolor}`;
-}
+
+export let blendMode = controls_v.visualEffects.blendMode,
+    gradient = controls_v.visualEffects.gradients,
+    backgroundColor = controls_v.visualOptions.colorPicker,
+    quadCurves = controls_v.visualOptions.quadCurves.enabled
+//    currentSongDuration,
+//    includeBackground,
+//    useQuadCurves,
+//    updateTime

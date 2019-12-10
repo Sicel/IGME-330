@@ -30,36 +30,8 @@
             <input v-model="searchTerms.artist" placeholder="Artist">
             <input v-model="searchTerms.track" placeholder="Track">
             <button @click="search()">Get Lyrics</button>
-            <audio-element :effects="audioSliders" :in-types="inTypes"></audio-element>
-            <visual-element :options="visualOptions" :in-types="inTypes" ref="vis"></visual-element>
-            <!---
-            <div id="audioControls"><audio controls v-bind:src="selectedSong"></audio>
-                <select @change="console.log(selectedSong)" v-model="selectedSong">
-                    <option disabled>Please Select a song</option>
-                    <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
-                </select>
-            </div>
-
-            <div id="visualControls">
-                <label>Blend Mode</label>
-                <select v-model="selectedBlendMode">
-                    <option v-for="mode in blendModes" v-bind:value="mode">{{ mode }}</option>
-                </select>
-
-                <label>Gradient Mode</label>
-                <input type="radio" value="grad" v-model="gradMode"><label>Rainbow</label>
-                <input type="radio" value="rgb" v-model="gradMode"><label>Red Green Blue</label>
-
-                <input type="checkbox" v-model="includeBackground">
-                <label>Include Background</label>
-
-                <label>Background Color</label>
-                <input type="text" id="colorPicker" @click="setUpColor($event)" class="jscolor { width: 100}">
-
-                <input type="checkbox" v-model="quadCurves">
-                <label>Use Quadratic Curve</label>
-            </div>
-        --->
+            <control-section name="Audio" :section="sections.audio" :effects="audioEffects"></control-section>
+            <control-section name="Visual" :section="sections.visual" :effects="visualEffects" :options="visualOptions"></control-section>
         </div>
 
         <div id="arrowContainer" title="Show controls" @click="unhideControls()">
