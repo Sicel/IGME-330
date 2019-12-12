@@ -1,6 +1,4 @@
-import {
-    ctx
-} from './main.js';
+import './canvas-utils.js'
 
 export let controlSection = {
     props: {
@@ -37,7 +35,6 @@ export let audioDiv = {
                     <hider v-for="effect in effects.sliders" :control-type="effect">
                         <slider :option="effect"></slider>
                     </hider>
-                <h3 class="sectionHeader">Options</h3>
             </div>`,
 };
 

@@ -1,5 +1,6 @@
 //import * as divs from './vueComponents.js';
 import * as components from './vueComponents.js';
+import './utils.js';
 
 const controls_v = new Vue({
     el: '#controls',
@@ -33,7 +34,7 @@ const controls_v = new Vue({
         checkedAudioSettings: [],
         currentAudioTime: 0,
         currentAudioLength: 0,
-        audioTime: "0:00 / 3:43", //`${this.curentAudioTime} / ${this.currentAudioLength}`,
+        audioTime: "0:00 / 3:43",
         selectedSong: "audio/glass%20animals%20flip.mp3",
         songs: [
             {
@@ -165,7 +166,9 @@ const controls_v = new Vue({
 export let blendMode = controls_v.visualEffects.blendMode,
     gradient = controls_v.visualEffects.gradients,
     backgroundColor = controls_v.visualOptions.colorPicker,
-    quadCurves = controls_v.visualOptions.quadCurves.enabled
+    quadCurves = controls_v.visualOptions.quadCurves,
+    songLength = controls_v.currentAudioLength,
+    songTime = controls_v.currentAudioTime
 //    currentSongDuration,
 //    includeBackground,
 //    useQuadCurves,

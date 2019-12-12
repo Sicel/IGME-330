@@ -1,6 +1,5 @@
 export {
     init,
-    ctx
 };
 import {
     createAudioElement
@@ -20,52 +19,46 @@ import {
     //useQuadCurves,
     updateTime
 } from './ui.js';
-import './vue.js';
+import * as ui from './vue.js';
+import {
+    canvas
+} from './canvas-utils.js';
 
-let ctx = document.querySelector("#canvas").getContext("2d"),
-    numSamples = 128,
-    //audio = createAudioElement(document.querySelector('audio'), numSamples),
+let numSamples = 128,
+    audio = createAudioElement(document.querySelector('audio'), numSamples),
     circles = [],
     miniCircles = [],
-    maxDraw, // Max radius the circles can be
     maxMiniRadius, // Max radius the mini circles can be
-    gradient,
-    angleSpeed = 0.1, // Speed at which circles and lines rotate
-    rgbGradient,
-    gSet = 0; // Helps switch gradient mode 
+    angleSpeed = 0.1 // Speed at which circles and lines rotate
 
 // Initializes everything
 function init() {
     //setupUI(audio, ctx);
-    ctx = document.querySelector("#canvas").getContext("2d");
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
-    maxDraw = ctx.canvas.width >= ctx.canvas.height ? ctx.canvas.width : ctx.canvas.height;
-    ctx.globalCompositeOperation = 'xor';
+    canvas.init(window.innerWidth, window.innerHeight, ui.blendMode.selected);
 
-    setGradient();
+    canvas.ctx
 
-    maxMiniRadius = maxDraw / 4;
+    maxMiniRadius = canvas.max / 4;
 
     window.onresize = resize;
 
-    //update();
+    update();
 }
 
 function update() {
     requestAnimationFrame(update);
-    updateTime(audio.element.currentTime, currentSongDuration);
+    //updateTime(audio.element.currentTime, currentSongDuration);
 
     audio.analyser.getByteFrequencyData(audio.data);
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    canvas.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Colors the background
-    if (backgroundColor.enabled) {
-        ctx.save();
-        ctx.fillStyle = backgroundColor.color;
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.restore();
+    if (ui.backgroundColor.enabled) {
+        canvas.ctx.save();
+        canvas.ctx.fillStyle = ui.backgroundColor.color;
+        canvas.ctx.fillRect(0, 0, canvas.width, canvas.height);
+        canvas.ctx.restore();
     }
 
     // Splitting the frequencies into three sections
@@ -161,45 +154,42 @@ function update() {
         let angle2 = angle; // Angle of rotation for lines
         angle += angleSpeed;
         angleSpeed += Math.PI / 180 / 3;
-        let locX = (ctx.canvas.width / 2) + maxMiniRadius * Math.cos(angle);
-        let locY = (ctx.canvas.height / 2) + maxMiniRadius * Math.sin(angle);
-        miniCircle.drawRotating(ctx, locX, locY, radius, 5);
+        let locX = (canvas.width / 2) + maxMiniRadius * Math.cos(angle);
+        let locY = (canvas.height / 2) + maxMiniRadius * Math.sin(angle);
+        miniCircle.drawRotating(canvas.ctx, locX, locY, radius, 5);
 
         angle2 -= angleSpeed;
 
         // Creates lines from the smallest center circle to the largest
         if (circles.length > 0) {
-            let startX = (ctx.canvas.width / 2) + circles[0].radius * Math.cos(angle2);
-            let startY = (ctx.canvas.height / 2) + circles[0].radius * Math.sin(angle2);
-            let endX = (ctx.canvas.width / 2) + circles[circles.length - 1].radius * Math.cos(angle2);
-            let endY = (ctx.canvas.height / 2) + circles[circles.length - 1].radius * Math.sin(angle2);
-            if (!quadCurves) {
+            let startX = (canvas.width / 2) + circles[0].radius * Math.cos(angle2);
+            let startY = (canvas.height / 2) + circles[0].radius * Math.sin(angle2);
+            let endX = (canvas.width / 2) + circles[circles.length - 1].radius * Math.cos(angle2);
+            let endY = (canvas.height / 2) + circles[circles.length - 1].radius * Math.sin(angle2);
+            if (!ui.quadCurves.enabled) {
                 let line = new Line();
-                line.draw(ctx, endX, endY, startX, startY);
+                line.draw(canvas.ctx, endX, endY, startX, startY);
             } else {
                 let quadCurve = new QuadCurve();
                 let midX = (endX + startX) // / 2) - endX * 0.4;
                 let midY = (endY + startY) // / 2) - endY * 0.4;
-                quadCurve.draw(ctx, endX, endY, midX, midY, startX, startY);
+                quadCurve.draw(canvas.ctx, endX, endY, midX, midY, startX, startY);
             }
         }
         if (currentColorMode != 'grad')
-            setRGB(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 125));
+            canvas.rgbGradient(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 125));
         else {
             // This if statement was used to so that the gradient changed but it doesn't seem like it's needed anymore
             // Still keeping it just in case
-            if (gSet == 0) {
-                setGradient();
-                gSet++;
-            }
+            canvas.defaultGradient();
         }
     }
 
     // Draws center circles
     for (let i = 0; i < circles.length; i++) {
-        circles[i].draw(ctx);
+        circles[i].draw(canvas.ctx);
         // Removes them if they are bigger than the screen
-        if (circles[i].radius > maxDraw) {
+        if (circles[i].radius > canvas.max) {
             circles.splice(i, 1);
         }
     }
@@ -207,35 +197,6 @@ function update() {
 
 // Resets values and applies to resized window
 function resize() {
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
-    maxDraw = ctx.canvas.width >= ctx.canvas.height ? ctx.canvas.width : ctx.canvas.height;
-    maxMiniRadius = maxDraw / 4;
-    setGradient();
-    ctx.globalCompositeOperation = selectedMode;
-}
-
-// Creates rainbow gradient
-function setGradient() {
-    gradient = ctx.createRadialGradient(ctx.canvas.width / 2, ctx.canvas.height / 2, 1, ctx.canvas.width / 2, ctx.canvas.height / 2, maxDraw);
-    gradient.addColorStop(0, '#fff');
-    gradient.addColorStop(1 / 6, '#0088FF');
-    gradient.addColorStop(1 / 3, '#FFAA00');
-    gradient.addColorStop(1 / 2, '#FF7700');
-    gradient.addColorStop(2 / 3, '#FF0033');
-    gradient.addColorStop(5 / 6, '#9911AA');
-    gradient.addColorStop(1, '#AADD22');
-
-    ctx.strokeStyle = gradient;
-}
-
-// Creates RGB gradient based on frequency values 
-function setRGB(r, g, b) {
-    rgbGradient = ctx.createRadialGradient(ctx.canvas.width / 2, ctx.canvas.height / 2, 1, ctx.canvas.width / 2, ctx.canvas.height / 2, maxDraw);
-    rgbGradient.addColorStop(0, `rgb( ${r}, 0, 0)`);
-    rgbGradient.addColorStop(.3, `rgb(0, ${g}, 0)`);
-    rgbGradient.addColorStop(.5, `rgb(0, 0, ${b})`);
-
-    ctx.strokeStyle = rgbGradient;
-    gSet = 0;
+    canvas.resize(window.innerWidth, window.innerHeight, blendMode.selected);
+    maxMiniRadius = canvas.max / 4;
 }
