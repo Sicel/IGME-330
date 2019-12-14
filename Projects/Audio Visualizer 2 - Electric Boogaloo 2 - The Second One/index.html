@@ -21,7 +21,8 @@
     <canvas id="canvas"></canvas>
     <div id="controls">
         <div id="ui">
-            <iframe width="560" height="315" v-bind:src="video.url"></iframe>
+            <iframe id="video" width="560" height="315" v-bind:src="video.url"></iframe>
+            <video controls :src="selectedVideo" type="video/mp4"></video>
             <audio controls v-bind:src="selectedSong"></audio>
             <select v-model="selectedSong">
                 <option disabled>Please Select a song</option>

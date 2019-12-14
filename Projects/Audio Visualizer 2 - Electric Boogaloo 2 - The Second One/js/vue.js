@@ -36,6 +36,7 @@ const controls_v = new Vue({
         currentAudioLength: 0,
         audioTime: "0:00 / 3:43",
         selectedSong: "audio/glass%20animals%20flip.mp3",
+        selectedVideo: '',
         songs: [
             {
                 name: "Glass Animals - Flip",
@@ -117,39 +118,55 @@ const controls_v = new Vue({
     },
     methods: {
         search() {
-            fetch(`https://orion.apiseeds.com/api/music/lyric/${this.searchTerms.artist}/${this.searchTerms.track}?apikey=t0fQtQW56iJKDN85vC3lrI1y3m0hooWfCieVWRcJz7GNg72lhZVCPrjEG1RxWDKk`)
+            let headers = new Headers({
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            });
+            /* fetch(`https://orion.apiseeds.com/api/music/lyric/${this.searchTerms.artist}/${this.searchTerms.track}?apikey=t0fQtQW56iJKDN85vC3lrI1y3m0hooWfCieVWRcJz7GNg72lhZVCPrjEG1RxWDKk`)
+                 .then(response => {
+                     if (!response.ok) {
+                         throw Error(`ERROR: ${response.statusText}`);
+                     }
+                     return response.json();
+                 })
+                 .then(json => {
+                     //this.result = json.data;
+                     this.searchTerm = `${this.searchTerms.artist} - ${this.searchTerms.track}`;
+                     this.songLyrics = json.result.track.text;
+                     console.log(this.songLyrics);
+                 });
+
+             //if (! this.term.trim()) return;
+             fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${this.searchTerms.artist} - ${this.searchTerms.track}&type=video&maxResults=10&key=AIzaSyDNoaU5HfiTlQLbMIi8_zwDpP560120zzE`)
+                 .then(response => {
+                     if (!response.ok) {
+                         throw Error(`ERROR: ${response.statusText}`);
+                     }
+                     return response.json();
+                 })
+                 .then(json => {
+                     //this.result = json.data;
+                     let firstResult = json.items[0];
+                     this.video.id = firstResult.id.videoId;
+                     this.video.url = `https://www.youtube.com/embed/${this.video.id}?autoplay=0`;
+                     this.video.title = firstResult.snippet.title;
+                     this.video.channel = firstResult.snippet.channelTitle;
+                     this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`;
+
+                     console.log(this.video);
+                 })*/
+            fetch(`https://visualizer-util.herokuapp.com/api/info?url=https://www.youtube.com/watch?v=Carbe7kC7uA&format=bestaudio`)
                 .then(response => {
+                    console.log(response);
                     if (!response.ok) {
                         throw Error(`ERROR: ${response.statusText}`);
                     }
                     return response.json();
                 })
                 .then(json => {
-                    //this.result = json.data;
-                    this.searchTerm = `${this.searchTerms.artist} - ${this.searchTerms.track}`;
-                    this.songLyrics = json.result.track.text;
-                    console.log(this.songLyrics);
+                    console.log(json.info.url);
+                    this.selectedVideo = json.info.url;
                 });
-
-            //if (! this.term.trim()) return;
-            fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${this.searchTerms.artist} - ${this.searchTerms.track}&type=video&maxResults=10&key=AIzaSyDNoaU5HfiTlQLbMIi8_zwDpP560120zzE`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw Error(`ERROR: ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(json => {
-                    //this.result = json.data;
-                    let firstResult = json.items[0];
-                    this.video.id = firstResult.id.videoId;
-                    this.video.url = `https://www.youtube.com/embed/${this.video.id}?autoplay=0`;
-                    this.video.title = firstResult.snippet.title;
-                    this.video.channel = firstResult.snippet.channelTitle;
-                    this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`;
-
-                    console.log(this.video);
-                })
         },
 
         play() {
@@ -169,7 +186,3 @@ export let blendMode = controls_v.visualEffects.blendMode,
     quadCurves = controls_v.visualOptions.quadCurves,
     songLength = controls_v.currentAudioLength,
     songTime = controls_v.currentAudioTime
-//    currentSongDuration,
-//    includeBackground,
-//    useQuadCurves,
-//    updateTime
