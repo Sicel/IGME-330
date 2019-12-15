@@ -1,5 +1,6 @@
 // Creates a new audio element object that contains all audio properties
 export function createAudioElement(audioElement, numSamples) {
+    audioElement.crossOrigin = "anonymous";
     let ctx = new(window.AudioContext || window.webkitAudioContext);
     let audioHolder = {
         element: audioElement,

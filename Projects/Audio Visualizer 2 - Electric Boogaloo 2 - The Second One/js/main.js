@@ -16,7 +16,7 @@ import {
 } from './canvas-utils.js';
 
 let numSamples = 128,
-    audio = createAudioElement(document.querySelector('audio'), numSamples),
+    audio = createAudioElement(document.querySelector('video'), numSamples),
     circles = [],
     miniCircles = [],
     maxMiniRadius, // Max radius the mini circles can be
