@@ -155,7 +155,7 @@ const controls_v = new Vue({
                     'content-type': 'application/json'
                 }
             }
-            let ytd = await fetch(`https://visualizer-util.herokuapp.com/api/info?url=${this.video.url}`)
+            let ytd = await fetch(`https://visualizer-util.herokuapp.com/api/info?url=${this.video.url}&format=bestaudio`)
                 .then(response => {
                     if (!response.ok) {
                         throw Error(`ERROR: ${response.statusText}`);
@@ -184,7 +184,7 @@ const controls_v = new Vue({
                     this.searchTerms = this.results[0];
                 });
             // Lyrics
-            let lyrics = await fetch(`https://orion.apiseeds.com/api/music/lyric/${this.searchTerms.artist}/${this.searchTerms.track}?apikey=t0fQtQW56iJKDN85vC3lrI1y3m0hooWfCieVWRcJz7GNg72lhZVCPrjEG1RxWDKk&format=bestaudio`)
+            let lyrics = await fetch(`https://orion.apiseeds.com/api/music/lyric/${this.searchTerms.artist}/${this.searchTerms.track}?apikey=t0fQtQW56iJKDN85vC3lrI1y3m0hooWfCieVWRcJz7GNg72lhZVCPrjEG1RxWDKk`)
                 .then(response => {
                     if (!response.ok) {
                         this.songLyrics = "Could Not Find Lyrics";
@@ -198,6 +198,7 @@ const controls_v = new Vue({
         },
 
         updateLink(e) {
+            console.log("Entered");
             let send = {
                 method: 'GET',
                 mode: 'cors',
@@ -206,14 +207,9 @@ const controls_v = new Vue({
                     'control-type': 'video/mp4'
                 })
             }
-            //fetch(`https://cors-anywhere.herokuapp.com/${this.selectedVideo}`, send)
-            //    .then(response => {
-            //        console.log(response);
-            //        if (!response.ok) {
-            //            throw Error(`ERROR: ${response.statusText}`);
-            //        }
-            //        console.log(response.arrayBuffer());
-            //    })
+
+            //if (e.target.)
+
         }
     }
 })

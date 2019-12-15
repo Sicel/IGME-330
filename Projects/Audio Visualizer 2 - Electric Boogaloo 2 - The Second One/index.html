@@ -22,7 +22,7 @@
     <canvas id="canvas"></canvas>
     <div id="controls">
         <div id="ui">
-            <video controls @loadedmetadata="updateLink($event)" :src="selectedVideo" type="video/mp4"></video>
+            <video controls @loadedmetadata="updateLink($event)" :src="selectedVideo"></video>
             <audio controls v-bind:src="selectedSong"></audio>
             <select v-model="selectedSong">
                 <option disabled>Please Select a song</option>
