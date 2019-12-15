@@ -1,6 +1,3 @@
-export {
-    init,
-};
 import {
     createAudioElement
 } from './audio-utils.js';
@@ -10,13 +7,7 @@ import {
     QuadCurve
 } from './shapes.js';
 import {
-    setupUI,
-    selectedMode,
-    currentColorMode,
     currentSongDuration,
-    //backgroundColor,
-    //includeBackground,
-    //useQuadCurves,
     updateTime
 } from './ui.js';
 import * as ui from './vue.js';
@@ -25,18 +16,18 @@ import {
 } from './canvas-utils.js';
 
 let numSamples = 128,
-    audio = createAudioElement(document.querySelector('audio'), numSamples),
+    audio = createAudioElement(document.querySelector('video'), numSamples),
     circles = [],
     miniCircles = [],
     maxMiniRadius, // Max radius the mini circles can be
     angleSpeed = 0.1 // Speed at which circles and lines rotate
 
 // Initializes everything
-function init() {
+export function init() {
     //setupUI(audio, ctx);
     canvas.init(window.innerWidth, window.innerHeight, ui.blendMode.selected);
 
-    canvas.ctx
+    canvas.ctx;
 
     maxMiniRadius = canvas.max / 4;
 
@@ -176,12 +167,15 @@ function update() {
                 quadCurve.draw(canvas.ctx, endX, endY, midX, midY, startX, startY);
             }
         }
-        if (currentColorMode != 'grad')
-            canvas.rgbGradient(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 125));
-        else {
-            // This if statement was used to so that the gradient changed but it doesn't seem like it's needed anymore
-            // Still keeping it just in case
-            canvas.defaultGradient();
+        switch (ui.gradient.current) {
+            case "rgb":
+                canvas.rgbGradient(255 * (lowThirdAvg / 255), 255 * (midThirdAvg / 255), 255 * (highThirdAvg / 125));
+                break;
+            case "custom":
+                break;
+            default:
+                canvas.defaultGradient();
+                break;
         }
     }
 

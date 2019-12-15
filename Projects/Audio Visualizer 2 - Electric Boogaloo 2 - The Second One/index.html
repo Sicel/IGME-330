@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <header name="Access-Control-Allow-Origin" value="*" />
     <meta charset="utf-8" />
     <title>Audio Visualizer</title>
     <link rel="stylesheet" href="css/style.css" />
@@ -21,14 +22,13 @@
     <canvas id="canvas"></canvas>
     <div id="controls">
         <div id="ui">
-            <iframe width="560" height="315" v-bind:src="video.url"></iframe>
+            <video controls @loadedmetadata="updateLink($event)" :src="selectedVideo" type="video/mp4"></video>
             <audio controls v-bind:src="selectedSong"></audio>
             <select v-model="selectedSong">
                 <option disabled>Please Select a song</option>
                 <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
             </select>
-            <input v-model="searchTerms.artist" placeholder="Artist">
-            <input v-model="searchTerms.track" placeholder="Track">
+            <input v-model="searchTerm" placeholder="Search">
             <button @click="search()">Get Lyrics</button>
             <control-section name="Audio" :section="sections.audio" :effects="audioEffects"></control-section>
             <control-section name="Visual" :section="sections.visual" :effects="visualEffects" :options="visualOptions"></control-section>
