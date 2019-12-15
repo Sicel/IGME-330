@@ -1,4 +1,6 @@
-import './canvas-utils.js'
+import {
+    canvas
+} from './canvas-utils.js'
 
 export let controlSection = {
     props: {
@@ -117,13 +119,21 @@ Vue.component('dropdown', {
     props: {
         option: Object
     },
+    data() {
+        return {
+            toUpdate: null
+        }
+    },
     template: `
     <div class="control">
         <label v-text="option.name"></label>
-        <select v-model='option.selected' @change="$emit('change')">
-            <option v-for="selection in option.selections">{{ selection }}</option>
-        <select>    
-    </div>`
+        <select v-model='option.selected' @change="toUpdate.blendMode = option.selected">
+            <option v-for="selection in option.selections" :value="selection">{{ selection }}</option>
+        <select>
+    </div>`,
+    created() {
+        this.toUpdate = canvas;
+    }
 })
 
 Vue.component('radio-group', {

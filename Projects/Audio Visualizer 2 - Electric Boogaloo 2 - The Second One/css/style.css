@@ -45,9 +45,7 @@ body {
     flex-grow: 3;
 }
 
-#searchControl {
-    
-}
+#searchControl {}
 
 .controlHeading {
     display: inline-flex;
@@ -64,8 +62,6 @@ body {
 }
 
 .controlSection {
-    display: none;
-    visibility: hidden;
     animation: ease 1s paused;
 }
 

@@ -197,6 +197,6 @@ function update() {
 
 // Resets values and applies to resized window
 function resize() {
-    canvas.resize(window.innerWidth, window.innerHeight, blendMode.selected);
+    canvas.resize(window.innerWidth, window.innerHeight, ui.blendMode.selected);
     maxMiniRadius = canvas.max / 4;
 }

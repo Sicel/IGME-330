@@ -140,7 +140,6 @@ const controls_v = new Vue({
                     return response.json();
                 })
                 .then(json => {
-                    //this.result = json.data;
                     let firstResult = json.items[0];
                     this.video.id = firstResult.id.videoId;
                     this.video.url = `https://www.youtube.com/embed/${this.video.id}?autoplay=0`;
@@ -169,7 +168,3 @@ export let blendMode = controls_v.visualEffects.blendMode,
     quadCurves = controls_v.visualOptions.quadCurves,
     songLength = controls_v.currentAudioLength,
     songTime = controls_v.currentAudioTime
-//    currentSongDuration,
-//    includeBackground,
-//    useQuadCurves,
-//    updateTime
