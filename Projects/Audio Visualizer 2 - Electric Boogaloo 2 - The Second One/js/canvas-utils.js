@@ -31,8 +31,8 @@ export const canvas = {
     rgbGradient(r, g, b) {
         this.gradient = this.ctx.createRadialGradient(this.halfWidth, this.halfHeight, 1, this.halfWidth, this.halfHeight, this.max);
         this.gradient.addColorStop(0, `rgb( ${r}, 0, 0)`);
-        this.gradient.addColorStop(.3, `rgb(0, ${g}, 0)`);
-        this.gradient.addColorStop(.5, `rgb(0, 0, ${b})`);
+        this.gradient.addColorStop(1 / 3, `rgb(0, ${g}, 0)`);
+        this.gradient.addColorStop(2 / 3, `rgb(0, 0, ${b})`);
 
         this.ctx.strokeStyle = this.gradient;
     },
@@ -107,9 +107,10 @@ function setGradient() {
 // Creates RGB gradient based on frequency values 
 function setRGBGradient(r, g, b) {
     gradient = ctx.createRadialGradient(getHalfWidth(), getHalfHeight(), 1, getHalfWidth(), getHalfHeight(), getMax());
+
     gradient.addColorStop(0, `rgb( ${r}, 0, 0)`);
-    gradient.addColorStop(.3, `rgb(0, ${g}, 0)`);
-    gradient.addColorStop(.5, `rgb(0, 0, ${b})`);
+    gradient.addColorStop(.5, `rgb(0, ${g}, 0)`);
+    gradient.addColorStop(1, `rgb(0, 0, ${b})`);
 
     ctx.strokeStyle = gradient;
 }

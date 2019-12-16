@@ -1,23 +1,14 @@
 import {
-    createAudioElement
-} from './audio-utils.js';
-import {
     Circle,
     Line,
     QuadCurve
 } from './shapes.js';
-import {
-    currentSongDuration,
-    updateTime
-} from './ui.js';
 import * as ui from './vue.js';
 import {
     canvas
 } from './canvas-utils.js';
 
-let numSamples = 128,
-    audio = createAudioElement(document.querySelector('video'), numSamples),
-    circles = [],
+let circles = [],
     miniCircles = [],
     maxMiniRadius, // Max radius the mini circles can be
     angleSpeed = 0.1 // Speed at which circles and lines rotate
@@ -38,9 +29,10 @@ export function init() {
 
 function update() {
     requestAnimationFrame(update);
+    ui.updateTime();
     //updateTime(audio.element.currentTime, currentSongDuration);
 
-    audio.analyser.getByteFrequencyData(audio.data);
+    ui.audio.analyser.getByteFrequencyData(ui.audio.data);
 
     canvas.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -69,51 +61,23 @@ function update() {
     var highThirdAmount = 0;
     var highThirdAvg = 0;
 
-    /* These were meant to split the mids into threes to create more effects but I ran out of time
-    var midLowThirdSize = 0;
-    var midMidThirdSize = 0;
-    var midHighThirdSize = 0;
-
-    var midLowThirdAmount = 0;
-    var midMidThirdAmount = 0;
-    var midHighThirdAmount = 0;
-
-    var midLowThirdAvg = 0;
-    var midMidThirdAvg = 0;
-    var midHighThirdAvg = 0;
-    */
-
     // Gets the amount of frequencies in each bin and averages them
-    for (let i = 0; i < audio.data.length; i++) {
-        if (i <= audio.data.length / 3) {
+    for (let i = 0; i < ui.audio.data.length; i++) {
+        if (i <= ui.audio.data.length / 3) {
             lowThirdSize++;
-            lowThirdAmount += audio.data[i];
-        } else if (i >= audio.data.length / 3 && i <= 2 * audio.data.length / 3) {
+            lowThirdAmount += ui.audio.data[i];
+        } else if (i >= ui.audio.data.length / 3 && i <= 2 * ui.audio.data.length / 3) {
             midThirdSize++;
-            midThirdAmount += audio.data[i];
-            //if (i >= audio.data.length / 3 && i <= 11 * audio.data.length / 27) {
-            //    midLowThirdSize++;
-            //    midLowThirdAmount += audio.data[i];
-            //} else if (i >= 4 * audio.data.length / 9 && i <= 14 * audio.data.length / 27) {
-            //    midMidThirdSize++;
-            //    midMidThirdAmount += audio.data[i];
-            //} else if (i >= 5 * audio.data.length / 9 && i <= 17 * audio.data.length / 27) {
-            //    midHighThirdSize++;
-            //    midHighThirdAmount += audio.data[i];
-            //}
-        } else if (i >= 2 * audio.data.length / 3 && i < audio.data.length) {
+            midThirdAmount += ui.audio.data[i];
+        } else if (i >= 2 * ui.audio.data.length / 3 && i < ui.audio.data.length) {
             highThirdSize++;
-            highThirdAmount += audio.data[i];
+            highThirdAmount += ui.audio.data[i];
         }
     }
 
     lowThirdAvg = lowThirdAmount / lowThirdSize;
     midThirdAvg = midThirdAmount / midThirdSize;
     highThirdAvg = highThirdAmount / highThirdSize;
-
-    //midLowThirdAvg = midLowThirdAmount / midLowThirdSize;
-    //midMidThirdAvg = midMidThirdAmount / midMidThirdSize;
-    //midHighThirdAvg = midHighThirdAmount / midHighThirdSize;
 
     // Creates a center circle
     if (midThirdAvg >= 45) {
@@ -133,12 +97,10 @@ function update() {
             case 1:
                 percent = midThirdAvg / 255;
                 radius = maxMiniRadius * percent;
-                //miniCircle.drawRotating(ctx, ctx.canvas.width / 4, ctx.canvas.height / 2, radius, 5);
                 break;
             case 2:
                 percent = highThirdAvg / 255;
                 radius = maxMiniRadius * percent;
-                //miniCircle.drawRotating(ctx, 3 * ctx.canvas.width / 4, ctx.canvas.height / 2, radius, 5);
                 break;
         }
         let angle = (i * 2 * Math.PI) / 3; // Angle of rotation for circles
@@ -162,9 +124,9 @@ function update() {
                 line.draw(canvas.ctx, endX, endY, startX, startY);
             } else {
                 let quadCurve = new QuadCurve();
-                let midX = (endX + startX) // / 2) - endX * 0.4;
-                let midY = (endY + startY) // / 2) - endY * 0.4;
-                quadCurve.draw(canvas.ctx, endX, endY, midX, midY, startX, startY);
+                let midX = (endX - startX);
+                let midY = (endY - startY);
+                quadCurve.draw(canvas.ctx, endX, endY, midX, midY, endX, endY);
             }
         }
         switch (ui.gradient.current) {

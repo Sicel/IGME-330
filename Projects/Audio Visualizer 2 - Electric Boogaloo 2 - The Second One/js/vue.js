@@ -1,6 +1,11 @@
 //import * as divs from './vueComponents.js';
 import * as components from './vueComponents.js';
-import './utils.js';
+
+import {
+    convertToTime
+} from './utils.js';
+
+import * as audioUtils from './audio-utils.js';
 
 const controls_v = new Vue({
     el: '#controls',
@@ -14,16 +19,16 @@ const controls_v = new Vue({
             visual: components.visualDiv
         },
         showControls: false,
+        search: true,
+        audioLoaded: false,
+        buttonText: 'Play',
         results: [],
-        searchTerms: {
-            artist: "Queen",
-            track: "Bohemian Rhapsody"
-        },
-        searchTerm: 'Queen - Hammer to Fall',
+        searchTerms: {},
+        searchTerm: 'Welcome to the black parade',
         video: {
             id: 0,
             url: ` `,
-            title: " ",
+            title: "Nothing",
             channel: " ",
             channelLink: ` `
         },
@@ -31,10 +36,12 @@ const controls_v = new Vue({
 
         // Audio Controls
         //audio: components.audioDiv,
+        audio: {},
+        numSamples: 128,
         playing: false,
         checkedAudioSettings: [],
-        currentAudioTime: 0,
-        currentAudioLength: 0,
+        currentAudioTime: "",
+        currentAudioLength: "",
         audioTime: "0:00 / 3:43",
         selectedSong: "audio/glass%20animals%20flip.mp3",
         selectedVideo: '',
@@ -59,21 +66,30 @@ const controls_v = new Vue({
                 enabled: false,
                 amount: 0,
                 min: 0,
-                max: 100
+                max: 100,
+                polls: true,
+                toggle: audioUtils.toggleDis,
+                update: audioUtils.updateDis
             }, {
                 name: "Low Shelf Filter",
                 sliderLabel: "Frequency Amount:",
                 enabled: false,
                 amount: 0,
                 min: 0,
-                max: 1000
+                max: 1000,
+                polls: true,
+                toggle: audioUtils.toggleLS,
+                update: audioUtils.updateLS
             }, {
                 name: "High Shelf Filter",
                 sliderLabel: "Frequency Amount:",
                 enabled: false,
                 amount: 1000,
                 min: 1000,
-                max: 2000
+                max: 2000,
+                polls: true,
+                toggle: audioUtils.toggleHS,
+                update: audioUtils.updateHS
             }]
         },
         audioOptions: {},
@@ -107,6 +123,7 @@ const controls_v = new Vue({
             colorPicker: {
                 name: "Include Background",
                 label: "Background Color",
+                polls: false,
                 enabled: false,
                 color: '#ffffff',
                 picker: {}
@@ -117,25 +134,62 @@ const controls_v = new Vue({
             }
         }
     },
+    mounted() {
+        this.audio = audioUtils.createAudioElement(this.$refs.video, this.numSamples);
+    },
     methods: {
-        async search() {
-            let wait = await Promise.all([
-                this.getYoutube(),
-                this.getLyrics()
-            ]).then(console.log("Done"))
+        find() {
+            this.audioLoaded = false;
+            this.playing = false;
+            this.buttonText = 'Play';
+
+            this.getYoutube();
+            this.getLyrics();
         },
 
         play() {
+            if (!this.audioLoaded)
+                return;
+
+            if (this.audio.ctx.state == "suspended") {
+                this.audio.ctx.resume();
+            }
+
             this.playing = !this.playing;
+            console.log(this.playing);
+
+            if (this.playing) {
+                this.$refs.video.play();
+            } else {
+                this.$refs.video.pause();
+            }
         },
 
         unhideControls() {
             this.showControls = !this.showControls;
         },
 
+        loaded(e) {
+            if (e.target.readyState >= 2) {
+                this.audioLoaded = true;
+                this.currentAudioLength = `${convertToTime(this.audio.element.duration)}`;
+                this.play();
+            };
+        },
+
+        updateTime() {
+            if (!this.audioLoaded) {
+                this.audioTime = '--:-- / --:--';
+                return;
+            }
+
+            let ct = convertToTime(this.audio.element.currentTime);
+
+            this.audioTime = `${ct} / ${this.currentAudioLength}`;
+        },
+
         async getYoutube() {
             // Youtube
-            console.log(this.searchTerm)
             let yt = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${this.searchTerm}&type=video&maxResults=10&key=AIzaSyDNoaU5HfiTlQLbMIi8_zwDpP560120zzE`)
                 .then(response => response.json())
                 .then(json => {
@@ -148,13 +202,6 @@ const controls_v = new Vue({
                     this.video.channelLink = `https://www.youtube.com/channel/${firstResult.snippet.channelId}`;
                 });
             // Youtube-dl
-            let send = {
-                method: 'GET',
-                headers: {
-                    'access-control-allow-origin': '*',
-                    'content-type': 'application/json'
-                }
-            }
             let ytd = await fetch(`https://visualizer-util.herokuapp.com/api/info?url=${this.video.url}&format=bestaudio`)
                 .then(response => {
                     if (!response.ok) {
@@ -167,7 +214,7 @@ const controls_v = new Vue({
 
         async getLyrics() {
             // iTunes
-            let iTunes = await fetch(`https://itunes.apple.com/search?term=${this.searchTerm}&limit=10&entity=song`)
+            let iTunes = await fetch(`https://cors-anywhere.herokuapp.com/https://itunes.apple.com/search?term=${this.searchTerm}&limit=10&entity=song`)
                 .then(response => {
                     if (!response.ok) {
                         throw Error(`ERROR: ${response.statusText}`);
@@ -194,30 +241,16 @@ const controls_v = new Vue({
                     return response.json();
                 })
                 .then(json => this.songLyrics = json.result.track.text);
-            //console.log();
-        },
-
-        updateLink(e) {
-            console.log("Entered");
-            let send = {
-                method: 'GET',
-                mode: 'cors',
-                headers: new Headers({
-                    'accept-ranges': 'bytes',
-                    'control-type': 'video/mp4'
-                })
-            }
-
-            //if (e.target.)
-
         }
     }
 })
 
 
-export let blendMode = controls_v.visualEffects.blendMode,
+export let audio = controls_v.audio,
+    blendMode = controls_v.visualEffects.blendMode,
     gradient = controls_v.visualEffects.gradients,
     backgroundColor = controls_v.visualOptions.colorPicker,
     quadCurves = controls_v.visualOptions.quadCurves,
     songLength = controls_v.currentAudioLength,
-    songTime = controls_v.currentAudioTime
+    songTime = controls_v.currentAudioTime,
+    updateTime = controls_v.updateTime

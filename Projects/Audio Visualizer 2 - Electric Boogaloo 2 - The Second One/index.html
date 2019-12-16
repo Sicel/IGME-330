@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <header name="Access-Control-Allow-Origin" value="*" />
     <meta charset="utf-8" />
     <title>Audio Visualizer</title>
     <link rel="stylesheet" href="css/style.css" />
@@ -22,16 +21,26 @@
     <canvas id="canvas"></canvas>
     <div id="controls">
         <div id="ui">
-            <video controls @loadedmetadata="updateLink($event)" :src="selectedVideo"></video>
-            <audio controls v-bind:src="selectedSong"></audio>
-            <select v-model="selectedSong">
-                <option disabled>Please Select a song</option>
-                <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
-            </select>
-            <input v-model="searchTerm" placeholder="Search">
-            <button @click="search()">Get Lyrics</button>
-            <control-section name="Audio" :section="sections.audio" :effects="audioEffects"></control-section>
-            <control-section name="Visual" :section="sections.visual" :effects="visualEffects" :options="visualOptions"></control-section>
+            <h1 id='uiHeader'>Settings</h1>
+            <cp :song='video.title' :loaded='audioLoaded'>
+                <template v-slot:time> {{ audioTime }} </template>
+                <button class="button" :disabled='!audioLoaded' :class="{ 'pause': playing }" @click='play()'></button>
+            </cp>
+            <template v-if='search'>
+                <video ref='video' @loadeddata='loaded($event)' :src="selectedVideo"></video>
+            </template>
+            <template v-else>
+                <audio controls v-bind:src="selectedSong"></audio>
+                <select v-model="selectedSong">
+                    <option disabled>Please Select a song</option>
+                    <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
+                </select>
+            </template>
+            <search v-model='searchTerm' :find='find'></search>
+            <div id='controlSections'>
+                <control-section name="Audio" :section="sections.audio" :effects="audioEffects"></control-section>
+                <control-section name="Visual" :section="sections.visual" :effects="visualEffects" :options="visualOptions"></control-section>
+            </div>
         </div>
 
         <div id="arrowContainer" title="Show controls" @click="unhideControls()">

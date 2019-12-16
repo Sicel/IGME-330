@@ -18,8 +18,8 @@ body {
     text-align: center;
 }
 
-#controls {
-    transform: translate(0, -61px);
+#ui {
+    /*transform: translate(0, -61px);*/
     display: inline-flex;
     border: 2px solid black;
     border-top: none;
@@ -35,17 +35,68 @@ body {
 
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: stretch;
+    align-items: center;
     width: 80%;
     max-width: 950px;
 }
 
-#controls div {
+#ui > * {
+    flex: 1 100%;
+}
+
+#uiHeader {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#controlSections {
+    display: inline-flex;
+}
+
+#ui div {
     margin: 5px;
     flex-grow: 3;
 }
 
-#searchControl {}
+video {
+    width: 0;
+    height: 0;
+}
+
+/* Taken From:https://css-tricks.com/making-pure-css-playpause-button/ */
+.button {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    box-sizing: border-box;
+
+    border-color: transparent transparent transparent #202020;
+    transition: 100ms all ease;
+    will-change: border-width;
+    cursor: pointer;
+
+    /* play state */
+    border-style: solid;
+    border-width: 15px 0px 15px 30px;
+}
+
+.button.pause {
+    width: 30px;
+    height: 30px;
+    border-style: double;
+    border-width: 0px 0px 0px 30px;
+    transition: 100ms all ease;
+}
+
+.button:hover {
+    border-color: transparent transparent transparent #404040;
+}
+
+.button:disabled {
+    border-color: transparent transparent transparent #101010;
+    cursor: default;
+}
 
 .controlHeading {
     display: inline-flex;
@@ -69,18 +120,9 @@ body {
     margin: 0 3px 3px 0;
 }
 
-
-#songAndPlay {
-    display: inline-flex;
-}
-
 .effects div,
 .options div {
     padding-top: 0;
-}
-
-.effectInfo {
-    display: none;
 }
 
 .effectRange {
@@ -100,7 +142,6 @@ button {
 }
 
 #backgroundColor {
-    display: none;
     align-content: center;
     justify-content: center;
 }
@@ -110,7 +151,7 @@ button {
 }
 
 #arrowContainer {
-    transform: translate(0, -61px);
+    /*transform: translate(0, -61px);*/
     border: 1px solid black;
     border-radius: 6px;
     border-top: 0.5px solid rgb(51, 51, 51);

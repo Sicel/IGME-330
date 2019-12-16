@@ -59,6 +59,33 @@ export let visualDiv = {
             </div>`
 }
 
+Vue.component('cp', {
+    props: {
+        song: String,
+        loaded: Boolean,
+        buttonText: String
+    },
+    template: `
+    <div id='cpDiv'>
+        <slot></slot>
+        <h4 id='cpHead'>Current Song: <slot name='time'></slot></h4>
+        <p id='cp' v-text='song'></p>
+    </div>`
+})
+
+Vue.component('search', {
+    props: {
+        value: String,
+        find: Function
+    },
+    template: `
+    <div id=search>
+        <label>Search: </label>
+        <input :value='value' @input="$emit('input', $event.target.value)" id='searchBar'>
+        <button @click='find()' id='searchButton'>Search</button>
+    </div>`
+})
+
 Vue.component('slider', {
     props: {
         option: Object
@@ -67,7 +94,12 @@ Vue.component('slider', {
         <div class='control'>
             <label>{{option.sliderLabel}}</label>
             <div class='effectRange'>
-                <input type="range" :min='option.min' :max='option.max' v-model='option.amount'></input>
+                <template v-if='option.polls'>
+                    <input type="range" :min='option.min' :max='option.max' v-model='option.amount' @input='option.update(option.amount)'></input>
+                </template>
+                <template v-else>
+                    <input type="range" :min='option.min' :max='option.max' v-model='option.amount'></input>
+                </template>
                 <label v-text='option.amount'></label>
             </div>
         </div>`
@@ -80,7 +112,12 @@ Vue.component('hider', {
     template: `
     <div>
         <div class='control'>
-            <input type='checkbox' v-model="controlType.enabled"></input>
+            <template v-if='controlType.polls'>
+                <input type='checkbox' v-model="controlType.enabled" @change='controlType.toggle(controlType.enabled, controlType.amount)'></input>
+            </template>
+            <template v-else>
+                <input type='checkbox' v-model="controlType.enabled"></input>
+            </template>
             <label v-text="controlType.name"></label>
         </div>
         <template v-if="controlType.enabled">
