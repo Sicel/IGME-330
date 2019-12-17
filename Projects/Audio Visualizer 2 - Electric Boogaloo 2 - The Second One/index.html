@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>Audio Visualizer</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link href="css/animate.css" rel="stylesheet">
 
     <!--Color Picker-->
     <link href="css/color-picker/color-picker.min.css" rel="stylesheet">
@@ -20,12 +21,8 @@
 <body>
     <canvas id="canvas"></canvas>
     <div id="controls">
-        <div id="ui">
+        <div ref='ui' id="ui">
             <h1 id='uiHeader'>Settings</h1>
-            <cp :song='video.title' :loaded='audioLoaded'>
-                <template v-slot:time> {{ audioTime }} </template>
-                <button class="button" :disabled='!audioLoaded' :class="{ 'pause': playing }" @click='play()'></button>
-            </cp>
             <template v-if='search'>
                 <video ref='video' @loadeddata='loaded($event)' :src="selectedVideo"></video>
             </template>
@@ -36,15 +33,25 @@
                     <option v-for="song in songs" v-bind:value="song.src"> {{ song.name }} </option>
                 </select>
             </template>
-            <search v-model='searchTerm' :find='find'></search>
-            <div id='controlSections'>
-                <control-section name="Audio" :section="sections.audio" :effects="audioEffects"></control-section>
-                <control-section name="Visual" :section="sections.visual" :effects="visualEffects" :options="visualOptions"></control-section>
-            </div>
+            <cp :song='video.title' :loaded='audioLoaded'>
+                <template v-slot:time> {{ audioTime }} </template>
+                <button class="button" :disabled='!audioLoaded' :class="{ 'pause': playing }" @click='play()'></button>
+            </cp>
+            <template v-if='!loading'>
+                <search v-model='searchTerm' :find='find'></search>
+                <div id='controlSections'>
+                    <control-section name="Audio" :section="sections.audio" :effects="audioEffects"></control-section>
+                    <control-section name="Visual" :section="sections.visual" :effects="visualEffects" :options="visualOptions"></control-section>
+                </div>
+            </template>
+            <template v-else>
+                <p>Loading...</p>
+            </template>
         </div>
-
-        <div id="arrowContainer" title="Show controls" @click="unhideControls()">
+        <div class="container down" ref='downArrow' title="Show controls" @click="showUI($event)">
             <p class="downArrow"></p>
         </div>
+
+        <lyrics :screenWidth='screenWidth' :lyrics='songLyrics'></lyrics>
     </div>
 </body></html>

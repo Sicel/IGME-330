@@ -18,8 +18,14 @@ body {
     text-align: center;
 }
 
+#lyrics {
+    color: #CDCDCD;
+    flex-direction: row;
+    height: 80%;
+}
+
+#lyricsDisplay,
 #ui {
-    /*transform: translate(0, -61px);*/
     display: inline-flex;
     border: 2px solid black;
     border-top: none;
@@ -42,6 +48,14 @@ body {
 
 #ui > * {
     flex: 1 100%;
+}
+
+#lyricsDisplay {
+    border-radius: 6px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: auto;
+    height: 80%;
 }
 
 #uiHeader {
@@ -150,18 +164,34 @@ button {
     margin-right: 5px;
 }
 
-#arrowContainer {
+.container {
     /*transform: translate(0, -61px);*/
     border: 1px solid black;
     border-radius: 6px;
-    border-top: 0.5px solid rgb(51, 51, 51);
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+
     width: 50px;
     margin: auto;
     transition: 1s;
 
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+.container.down {
+    border-top: 0.5px solid rgb(51, 51, 51);
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.container.left {
+    width: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-right: 0.5px solid rgb(51, 51, 51);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 50px;
 }
 
 .downArrow {
@@ -173,7 +203,38 @@ button {
     -webkit-transform: rotate(45deg);
 }
 
-/*
+.leftArrow {
+    border: solid #CDCDCD;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}
+
+/* Taken From: https://www.w3schools.com/howto/howto_css_loader.asp
+.loader {
+    border: 8px solid #f3f3f3;
+    /* Light grey //
+    border-top: 8px solid #3498db;
+    /* Blue //
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    animation: spin 2s linear infinite;
+}
+*/
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+
+    /*
 @media screen and (max-width: 600px) {
     #controls {
         transform: translate(0, 0.5px);

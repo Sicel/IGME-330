@@ -18,10 +18,11 @@ const controls_v = new Vue({
             audio: components.audioDiv,
             visual: components.visualDiv
         },
-        showControls: false,
+        uiShowing: false,
+        lyricsShowing: false,
         search: true,
+        loading: false,
         audioLoaded: false,
-        buttonText: 'Play',
         results: [],
         searchTerms: {},
         searchTerm: 'Welcome to the black parade',
@@ -33,6 +34,7 @@ const controls_v = new Vue({
             channelLink: ` `
         },
         songLyrics: "",
+        screenWidth: 0,
 
         // Audio Controls
         //audio: components.audioDiv,
@@ -134,17 +136,30 @@ const controls_v = new Vue({
             }
         }
     },
+    created() {
+        this.screenWidth = window.innerWidth;
+
+        window.onresize = _ => this.screenWidth = window.innerWidth;
+    },
     mounted() {
+        let controls = this.$refs.ui;
+        let downArrow = this.$refs.downArrow;
+
         this.audio = audioUtils.createAudioElement(this.$refs.video, this.numSamples);
+
+        controls.style.transform = `translate(0, ${-controls.offsetHeight}px)`;
+        downArrow.style.transform = `translate(0, ${-controls.offsetHeight - 1}px)`;
     },
     methods: {
-        find() {
+        async find() {
             this.audioLoaded = false;
             this.playing = false;
-            this.buttonText = 'Play';
+            this.loading = true;
 
-            this.getYoutube();
-            this.getLyrics();
+            let load = await Promise.all([
+                this.getYoutube(),
+                this.getLyrics()
+            ])
         },
 
         play() {
@@ -172,6 +187,7 @@ const controls_v = new Vue({
         loaded(e) {
             if (e.target.readyState >= 2) {
                 this.audioLoaded = true;
+                this.loading = false;
                 this.currentAudioLength = `${convertToTime(this.audio.element.duration)}`;
                 this.play();
             };
@@ -186,6 +202,20 @@ const controls_v = new Vue({
             let ct = convertToTime(this.audio.element.currentTime);
 
             this.audioTime = `${ct} / ${this.currentAudioLength}`;
+        },
+
+        showUI(e) {
+            let downArrow = e.target;
+            let controls = this.$refs.ui;
+            this.uiShowing = !this.uiShowing;
+
+            if (this.uiShowing) {
+                downArrow.style.transform = "translate(0, -1px)";
+                controls.style.transform = `translate(0, 0)`;
+            } else {
+                downArrow.style.transform = `translate(0, ${-controls.offsetHeight - 1}px)`;
+                controls.style.transform = `translate(0, ${-controls.offsetHeight}px)`;
+            }
         },
 
         async getYoutube() {
@@ -253,4 +283,5 @@ export let audio = controls_v.audio,
     quadCurves = controls_v.visualOptions.quadCurves,
     songLength = controls_v.currentAudioLength,
     songTime = controls_v.currentAudioTime,
-    updateTime = controls_v.updateTime
+    updateTime = controls_v.updateTime,
+    screenWidth = controls_v.screenWidth

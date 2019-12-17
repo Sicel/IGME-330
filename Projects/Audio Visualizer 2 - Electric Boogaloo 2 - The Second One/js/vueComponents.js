@@ -197,3 +197,56 @@ Vue.component('checkbox', {
         <label v-text="option.name"></label>
     </div>`
 })
+
+Vue.component('lyrics', {
+    props: {
+        lyrics: String,
+        screenWidth: Number
+    },
+    data() {
+        return {
+            showing: false
+        }
+    },
+    template: `
+    <div id='lyrics'>
+        <div ref='rightArrow' class='container left' @click="display($event)">
+            <p class='leftArrow'></p>
+            <h3>Lyrics</h3>
+        </div>
+        
+        <div id='lyricsDisplay' ref='lyricsDisplay'>
+            <p v-text='lyrics'></p>
+        </div>
+    </div>`,
+    mounted() {
+        let arrow = this.$refs.rightArrow;
+        let lyrics = this.$refs.lyricsDisplay;
+        let aPos = arrow.getBoundingClientRect().left;
+        let lPos = lyrics.getBoundingClientRect().right;
+
+        arrow.style.transform = `translate(${-aPos}px, 0px)`;
+        lyrics.style.transform = `translate(${-lPos}px, 0)`;
+    },
+    methods: {
+        display(e) {
+            let arrow = e.target;
+            let lyrics = this.$refs.lyricsDisplay;
+
+            let aHid = -arrow.getBoundingClientRect().left;
+            let lHid = -lyrics.getBoundingClientRect().right;
+
+            let aShow = aHid + lyrics.innerWidth;
+            let lShow = lHid + lyrics.innerWidth;
+            this.showing = !this.showing;
+
+            if (this.showing) {
+                arrow.style.transform = `translate(${aShow}px, 0)`;
+                lyrics.style.transform = `translate(${lShow}, 0)`;
+            } else {
+                arrow.style.transform = `translate(${aHid}px, 0px)`;
+                lyrics.style.transform = `translate(${lHid}px, 0)`;
+            }
+        }
+    }
+})
